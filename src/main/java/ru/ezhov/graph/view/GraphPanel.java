@@ -83,7 +83,10 @@ public class GraphPanel extends JPanel {
 
             @Override
             public void caretUpdate(CaretEvent e) {
-                scriptListModel.find(textField.getText());
+                String text = textField.getText();
+                if (text.length() >= 3) {
+                    scriptListModel.find(text);
+                }
             }
         });
 

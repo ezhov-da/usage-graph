@@ -1,9 +1,5 @@
 package ru.ezhov.graph.view;
 
-import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
-import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
-import org.fife.ui.rtextarea.RTextScrollPane;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -24,7 +20,7 @@ public class GraphDetailPanel extends JPanel {
     private JLabel labelUseIn;
     private JList listUseIn;
     private JLabel labelText;
-    private RSyntaxTextArea textAreaText;
+    private TextAreaPanel textAreaText;
 
 
     public GraphDetailPanel(ScriptViewDetail scriptViewDetail) {
@@ -46,9 +42,7 @@ public class GraphDetailPanel extends JPanel {
         listUse.setCellRenderer(new DetailPanelListRender());
         labelText = new JLabel("Текст");
 
-        textAreaText = new RSyntaxTextArea(20, 60);
-        textAreaText.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVASCRIPT);
-        textAreaText.setCodeFoldingEnabled(true);
+        textAreaText = new TextAreaPanel();
 
         MouseAdapter mouseAdapter = new MouseAdapter() {
             @Override
@@ -128,12 +122,12 @@ public class GraphDetailPanel extends JPanel {
         panel.add(labelText, BorderLayout.NORTH);
         labelText.setHorizontalAlignment(SwingConstants.CENTER);
         try {
-            textAreaText.setText(scriptViewDetail.text());
+            textAreaText.text(scriptViewDetail.text());
         } catch (Exception e) {
             e.printStackTrace();
-            textAreaText.setText("Не удалось получить текст скрипта");
+            textAreaText.text("Не удалось получить текст скрипта");
         }
-        panel.add(new RTextScrollPane(textAreaText), BorderLayout.CENTER);
+        panel.add(textAreaText, BorderLayout.CENTER);
         return panel;
     }
 }
