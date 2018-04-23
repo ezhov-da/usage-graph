@@ -23,22 +23,21 @@ public class App {
         }
 
         try {
-            Scripts scripts = ScriptsFactory.fromFile(new File("scripts"));
-            SwingUtilities.invokeLater(() -> {
-
-                JFrame frame = new JFrame("Использование скриптов");
-                frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-
-                frame.getContentPane().add(new GraphPanel(scripts));
-                frame.setSize(1000, 600);
-                frame.setLocationRelativeTo(null);
-                frame.setVisible(true);
+            final Scripts scripts = ScriptsFactory.fromFile(new File("scripts"));
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    JFrame frame = new JFrame("Использование скриптов");
+                    frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+                    frame.getContentPane().add(new GraphPanel(scripts));
+                    frame.setSize(1000, 600);
+                    frame.setLocationRelativeTo(null);
+                    frame.setVisible(true);
+                }
             });
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
     }
 }
 

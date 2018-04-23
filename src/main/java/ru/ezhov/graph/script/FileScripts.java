@@ -75,14 +75,14 @@ class FileScripts implements Scripts {
 
     private void putParent(String id, String idParent) {
         if (!parents.containsKey(id)) {
-            parents.put(id, new HashSet<>());
+            parents.put(id, new HashSet<String>());
         }
         parents.get(id).add(idParent);
     }
 
     private void putChildren(String id, String idChild) {
         if (!children.containsKey(id)) {
-            children.put(id, new HashSet<>());
+            children.put(id, new HashSet<String>());
         }
         children.get(id).add(idChild);
     }

@@ -17,9 +17,13 @@ import ru.ezhov.graph.script.Script;
 import ru.ezhov.graph.script.Scripts;
 
 import javax.swing.*;
+import javax.swing.event.CaretEvent;
+import javax.swing.event.CaretListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -45,7 +49,7 @@ public class GraphPanel extends JPanel {
     private void init() {
         setLayout(new BorderLayout());
         List<ScriptViewDetail> all = new ArrayList<>();
-        Graph<String, String> graph = new DirectedSparseMultigraph<>();
+        final Graph<String, String> graph = new DirectedSparseMultigraph<>();
         for (Script script : scripts.all()) {
             Set<ScriptView> scriptViewParent = new HashSet<>();
             Set<ScriptView> scriptViewChildren = new HashSet<>();
@@ -65,58 +69,95 @@ public class GraphPanel extends JPanel {
             all.add(new ScriptViewDetail(script, scriptViewParent, scriptViewChildren));
         }
 
-        JTextField textField = new JTextField();
-        textField.addKeyListener(new KeyAdapter() {
+        JPanel panelSearchScript = new JPanel(new BorderLayout());
+        final JTextField textField = new JTextField();
+        panelSearchScript.add(textField, BorderLayout.CENTER);
+        JButton buttonClearSearch = new JButton("Очистить");
+        Dimension dimension = new Dimension(60, buttonClearSearch.getHeight());
+        buttonClearSearch.setSize(dimension);
+        buttonClearSearch.setMaximumSize(dimension);
+        buttonClearSearch.setMinimumSize(dimension);
+        buttonClearSearch.setPreferredSize(dimension);
+        panelSearchScript.add(buttonClearSearch, BorderLayout.EAST);
+        textField.addCaretListener(new CaretListener() {
+
             @Override
-            public void keyReleased(KeyEvent e) {
+            public void caretUpdate(CaretEvent e) {
                 scriptListModel.find(textField.getText());
+            }
+        });
+
+        buttonClearSearch.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                textField.setText("");
             }
         });
 
 //        Collections.sort(all);
 
-        Selected selected = new Selected();
+        final Selected selected = new Selected();
 
-        JList list = new JList();
+        final JList list = new JList();
         scriptListModel = new ScriptListModel(all);
         list.setModel(scriptListModel);
         list.setCellRenderer(new ScriptListRender());
-        list.addListSelectionListener(e -> {
-            ScriptViewDetail s = (ScriptViewDetail) list.getSelectedValue();
-            if (s != null) {
-                selected.setSelected(s.id());
-                GraphPanel.this.repaint();
-            }
-        });
-
-        list.addMouseListener(new MouseAdapter() {
+        list.addListSelectionListener(new ListSelectionListener() {
             @Override
-            public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 2) {
-                    SwingUtilities.invokeLater(() -> {
-                        ScriptViewDetail s = (ScriptViewDetail) list.getSelectedValue();
-                        GraphDetailPanel graphPanel = new GraphDetailPanel(s);
-                        JDialog dialog = new JDialog();
-                        dialog.setTitle("Детальная информация о скрипте");
-                        dialog.setModal(true);
-                        dialog.add(graphPanel);
-                        dialog.setSize(700, 500);
-                        dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-                        dialog.setLocationRelativeTo(GraphPanel.this);
-                        dialog.setVisible(true);
-                    });
+            public void valueChanged(ListSelectionEvent e) {
+                ScriptViewDetail s = (ScriptViewDetail) list.getSelectedValue();
+                if (s != null) {
+                    selected.setSelected(s.id());
+                    GraphPanel.this.repaint();
                 }
             }
         });
 
+        list.addMouseListener(
+                new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        if (e.getClickCount() == 2) {
+                            SwingUtilities.invokeLater(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ScriptViewDetail s = (ScriptViewDetail) list.getSelectedValue();
+                                    GraphDetailPanel graphPanel = new GraphDetailPanel(s);
+                                    JDialog dialog = new JDialog();
+                                    dialog.setTitle("Детальная информация о скрипте");
+                                    dialog.setModal(true);
+                                    dialog.add(graphPanel);
+                                    dialog.setSize(700, 500);
+                                    dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+                                    dialog.setLocationRelativeTo(GraphPanel.this);
+                                    dialog.setVisible(true);
+
+                                }
+                            });
+                        }
+                    }
+                }
+        );
+
         Layout<Integer, String> layout = new FRLayout(graph);
-        layout.setSize(new Dimension(2000, 2000)); // sets the initial size of the space
+        layout.setSize(new
+
+                Dimension(2000, 2000)); // sets the initial size of the space
         // The BasicVisualizationServer<V,E> is parameterized by the edge types
         VisualizationViewer<Integer, String> vv =
                 new VisualizationViewer<Integer, String>(layout);
-        vv.setPreferredSize(new Dimension(2000, 2000)); //Sets the viewing area size
+        vv.setPreferredSize(new
+
+                Dimension(2000, 2000)); //Sets the viewing area size
         vv.setVertexToolTipTransformer(new ToStringLabeller());
-        vv.setEdgeToolTipTransformer(edge -> graph.getEndpoints(edge).toString());
+        vv.setEdgeToolTipTransformer(
+                new Transformer<String, String>() {
+                    @Override
+                    public String transform(String edge) {
+                        return graph.getEndpoints(edge).toString();
+                    }
+                }
+        );
         vv.getRenderContext().setVertexLabelTransformer(new ToStringLabeller());
         vv.getRenderContext().setVertexFillPaintTransformer(new MyVertexFillPaintFunction(selected));
         vv.getRenderer().getVertexLabelRenderer().setPositioner(new BasicVertexLabelRenderer.InsidePositioner());
@@ -138,7 +179,7 @@ public class GraphPanel extends JPanel {
         splitPane.setResizeWeight(0.4);
 
         JPanel panelWithList = new JPanel(new BorderLayout());
-        panelWithList.add(textField, BorderLayout.NORTH);
+        panelWithList.add(panelSearchScript, BorderLayout.NORTH);
         panelWithList.add(new JScrollPane(list), BorderLayout.CENTER);
 
         splitPane.setLeftComponent(panelWithList);
