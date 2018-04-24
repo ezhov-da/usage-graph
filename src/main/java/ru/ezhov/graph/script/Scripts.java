@@ -1,13 +1,13 @@
 package ru.ezhov.graph.script;
 
-import java.util.Set;
+import java.util.List;
 
 public interface Scripts {
     Script get(String id);
 
-    Set<Script> all();
+    List<Script> all();
 
-    Set<Script> parents(String id);
+    List<Script> parents(String id);
 
-    Set<Script> children(String id);
+    List<Script> children(String id);
 }

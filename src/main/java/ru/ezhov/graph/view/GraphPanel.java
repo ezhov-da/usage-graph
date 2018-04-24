@@ -15,12 +15,15 @@ import edu.uci.ics.jung.visualization.renderers.BasicVertexLabelRenderer;
 import org.apache.commons.collections15.Transformer;
 import ru.ezhov.graph.script.Script;
 import ru.ezhov.graph.script.Scripts;
+import ru.ezhov.graph.view.table.EventType;
+import ru.ezhov.graph.view.table.TableScriptEvent;
+import ru.ezhov.graph.view.table.TableScriptPanel;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -34,6 +37,7 @@ public class GraphPanel extends JPanel {
     private static final Logger LOG = Logger.getLogger(GraphPanel.class.getName());
 
     private Scripts scripts;
+    private TableScriptPanel tableScriptPanel;
     private ScriptListModel scriptListModel;
     private JTabbedPane tabbedPane = new JTabbedPane();
 
@@ -44,14 +48,64 @@ public class GraphPanel extends JPanel {
 
     private void init() {
         setLayout(new BorderLayout());
+
+        final Selected selected = new Selected();
+
+        tableScriptPanel = new TableScriptPanel(scripts, new TableScriptEvent() {
+            @Override
+            public void event(EventType eventType, Object event, final Script script) {
+                switch (eventType) {
+                    case MOUSE_RELEASED:
+                        selected.setSelected(script.id());
+                        GraphPanel.this.repaint();
+                        break;
+                    case MOUSE_CLICKED:
+                        MouseEvent mouseEvent = (MouseEvent) event;
+                        if (mouseEvent.getClickCount() == 2) {
+                            SwingUtilities.invokeLater(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Set<ScriptView> children = new HashSet<>();
+                                    Set<ScriptView> parent = new HashSet<>();
+
+                                    List<Script> childrenS = scripts.children(script.id());
+                                    for (Script s : childrenS) {
+                                        children.add(new DefaultScriptView(s));
+                                    }
+
+                                    List<Script> parentS = scripts.children(script.id());
+                                    for (Script s : parentS) {
+                                        parent.add(new DefaultScriptView(s));
+                                    }
+
+                                    GraphDetailPanel graphPanel = new GraphDetailPanel(new ScriptViewDetail(script, parent, children));
+                                    int tabCount = tabbedPane.getTabCount();
+
+                                    int index = tabbedPane.indexOfTab(script.id());
+                                    if (index != -1) {
+                                        tabbedPane.setSelectedIndex(index);
+                                    } else {
+                                        tabbedPane.addTab(script.id(), graphPanel);
+                                        tabbedPane.setTabComponentAt(tabbedPane.getTabCount() - 1, new TabHeader(script.id(), tabbedPane));
+                                        tabbedPane.setSelectedIndex(tabCount);
+                                    }
+                                }
+                            });
+                        }
+                        break;
+                }
+            }
+        });
+
+
         List<ScriptViewDetail> all = new ArrayList<>();
         final Graph<String, String> graph = new DirectedSparseMultigraph<>();
         for (Script script : scripts.all()) {
             Set<ScriptView> scriptViewParent = new HashSet<>();
             Set<ScriptView> scriptViewChildren = new HashSet<>();
             String id = script.id();
-            Set<Script> parents = scripts.parents(id);
-            Set<Script> children = scripts.children(id);
+            List<Script> parents = scripts.parents(id);
+            List<Script> children = scripts.children(id);
             for (Script child : children) {
                 graph.addEdge(script.id() + "Использует " + child.id(), script.id(), child.id(), EdgeType.DIRECTED);
                 scriptViewChildren.add(new DefaultScriptView(child));
@@ -62,81 +116,6 @@ public class GraphPanel extends JPanel {
             }
             all.add(new ScriptViewDetail(script, scriptViewParent, scriptViewChildren));
         }
-
-        JPanel panelSearchScript = new JPanel(new BorderLayout());
-        final JTextField textField = new JTextField();
-        panelSearchScript.add(textField, BorderLayout.CENTER);
-        JButton buttonClearSearch = new JButton(new ImageIcon(this.getClass().getResource("/clear_16x16.png")));
-        buttonClearSearch.setToolTipText("Очистить");
-        Dimension dimension = new Dimension(20, buttonClearSearch.getHeight());
-        buttonClearSearch.setSize(dimension);
-        buttonClearSearch.setMaximumSize(dimension);
-        buttonClearSearch.setMinimumSize(dimension);
-        buttonClearSearch.setPreferredSize(dimension);
-        panelSearchScript.add(buttonClearSearch, BorderLayout.EAST);
-
-        textField.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyReleased(KeyEvent e) {
-                String text = textField.getText();
-                if (text.length() >= 3 || "".equals(text.trim())) {
-                    scriptListModel.find(text);
-                }
-            }
-        });
-
-        buttonClearSearch.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                textField.setText("");
-                scriptListModel.find("");
-            }
-        });
-
-//        Collections.sort(all);
-
-        final Selected selected = new Selected();
-
-        final JList list = new JList();
-        scriptListModel = new ScriptListModel(all);
-        list.setModel(scriptListModel);
-        list.setCellRenderer(new ScriptListRender());
-        list.addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                ScriptViewDetail s = (ScriptViewDetail) list.getSelectedValue();
-                if (s != null) {
-                    selected.setSelected(s.id());
-                    GraphPanel.this.repaint();
-                }
-            }
-        });
-
-        list.addMouseListener(
-                new MouseAdapter() {
-                    @Override
-                    public void mouseClicked(MouseEvent e) {
-                        if (e.getClickCount() == 2) {
-                            SwingUtilities.invokeLater(new Runnable() {
-                                @Override
-                                public void run() {
-                                    ScriptViewDetail s = (ScriptViewDetail) list.getSelectedValue();
-                                    GraphDetailPanel graphPanel = new GraphDetailPanel(s);
-                                    int tabCount = tabbedPane.getTabCount();
-
-                                    int index = tabbedPane.indexOfTab(s.id());
-                                    if (index != -1) {
-                                        tabbedPane.setSelectedIndex(index);
-                                    } else {
-                                        tabbedPane.addTab(s.id(), graphPanel);
-                                        tabbedPane.setSelectedIndex(tabCount);
-                                    }
-                                }
-                            });
-                        }
-                    }
-                }
-        );
 
         Layout<Integer, String> layout = new FRLayout(graph);
         layout.setSize(new
@@ -175,11 +154,7 @@ public class GraphPanel extends JPanel {
         splitPane.setDividerLocation(0.4);
         splitPane.setResizeWeight(0.4);
 
-        JPanel panelWithList = new JPanel(new BorderLayout());
-        panelWithList.add(panelSearchScript, BorderLayout.NORTH);
-        panelWithList.add(new JScrollPane(list), BorderLayout.CENTER);
-
-        splitPane.setLeftComponent(panelWithList);
+        splitPane.setLeftComponent(tableScriptPanel);
 
         JPanel panelGraph = new JPanel();
         JLabel label = new JLabel("<html><center>Нажмите 'p' для возможности перетаскивания вершин <p>Нажмите 't' для перетаскивания всего графа");
@@ -188,6 +163,7 @@ public class GraphPanel extends JPanel {
         panelGraph.add(panelVV, BorderLayout.CENTER);
 
         tabbedPane.addTab("ГРАФ", panelGraph);
+        tabbedPane.setTabComponentAt(0, new TabHeader("ГРАФ", tabbedPane));
 
         splitPane.setRightComponent(tabbedPane);
 
@@ -219,6 +195,52 @@ public class GraphPanel extends JPanel {
 
         public void setSelected(String selected) {
             this.selected = selected;
+        }
+    }
+
+    private class TabHeader extends JPanel {
+        private JLabel label;
+        private JButton button;
+        private JTabbedPane tabbedPane;
+        private String text;
+
+        public TabHeader(final String text, final JTabbedPane tabbedPane) {
+            this.tabbedPane = tabbedPane;
+            this.text = text;
+            setOpaque(false);
+            label = new JLabel(text);
+            button = new JButton("x");
+            Dimension dimension = new Dimension(20, 20);
+            button.setMaximumSize(dimension);
+            button.setMinimumSize(dimension);
+            button.setBorder(null);
+            button.setPreferredSize(dimension);
+            button.setSize(dimension);
+            button.setFont(new Font(new JLabel().getFont().getName(), Font.PLAIN, 8));
+            setLayout(new BorderLayout());
+            add(label, BorderLayout.CENTER);
+            if (!"ГРАФ".equals(text)) {
+                add(button, BorderLayout.EAST);
+            }
+            button.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    tabbedPane.remove(tabbedPane.indexOfTab(text));
+                }
+            });
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            TabHeader tabHeader = (TabHeader) o;
+            return text != null ? text.equals(tabHeader.text) : tabHeader.text == null;
+        }
+
+        @Override
+        public int hashCode() {
+            return text != null ? text.hashCode() : 0;
         }
     }
 }

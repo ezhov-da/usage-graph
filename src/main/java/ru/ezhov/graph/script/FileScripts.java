@@ -1,20 +1,16 @@
 package ru.ezhov.graph.script;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 class FileScripts implements Scripts {
 
     private File root;
-    private Map<String, Script> scripts = new HashMap();
-    private Map<String, Set<String>> parents = new HashMap();
-    private Map<String, Set<String>> children = new HashMap();
-
+    private Map<String, Script> scripts = new HashMap<>();
+    private Map<String, List<String>> parents = new HashMap<>();
+    private Map<String, List<String>> children = new HashMap<>();
 
     public FileScripts(File root) throws Exception {
         this.root = root;
@@ -75,16 +71,23 @@ class FileScripts implements Scripts {
 
     private void putParent(String id, String idParent) {
         if (!parents.containsKey(id)) {
-            parents.put(id, new HashSet<String>());
+            parents.put(id, new ArrayList<String>());
         }
-        parents.get(id).add(idParent);
+
+        List<String> list = parents.get(id);
+        if (!list.contains(idParent)) {
+            list.add(idParent);
+        }
     }
 
     private void putChildren(String id, String idChild) {
         if (!children.containsKey(id)) {
-            children.put(id, new HashSet<String>());
+            children.put(id, new ArrayList<String>());
         }
-        children.get(id).add(idChild);
+        List<String> list = children.get(id);
+        if (!list.contains(idChild)) {
+            list.add(idChild);
+        }
     }
 
     @Override
@@ -93,14 +96,14 @@ class FileScripts implements Scripts {
     }
 
     @Override
-    public Set<Script> all() {
-        return new HashSet(scripts.values());
+    public List<Script> all() {
+        return new ArrayList<>(scripts.values());
     }
 
     @Override
-    public Set<Script> parents(String id) {
-        Set<Script> parents = new HashSet<>();
-        Set<String> pId = this.parents.get(id);
+    public List<Script> parents(String id) {
+        List<Script> parents = new ArrayList<>();
+        List<String> pId = this.parents.get(id);
         if (pId != null) {
             for (String s : pId) {
                 parents.add(scripts.get(s));
@@ -110,9 +113,9 @@ class FileScripts implements Scripts {
     }
 
     @Override
-    public Set<Script> children(String id) {
-        Set<Script> children = new HashSet<>();
-        Set<String> cId = this.children.get(id);
+    public List<Script> children(String id) {
+        List<Script> children = new ArrayList<>();
+        List<String> cId = this.children.get(id);
         if (cId != null) {
             for (String s : cId) {
                 children.add(scripts.get(s));

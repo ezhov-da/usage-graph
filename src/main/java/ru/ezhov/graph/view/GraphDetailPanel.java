@@ -16,6 +16,7 @@ public class GraphDetailPanel extends JPanel {
 
     private ScriptViewDetail scriptViewDetail;
     private JLabel labelId;
+    private JButton buttonClose;
     private JTextField textFieldId;
     private JLabel labelUse;
     private JList listUse;
@@ -34,6 +35,7 @@ public class GraphDetailPanel extends JPanel {
         setLayout(new BorderLayout());
 
         labelId = new JLabel("ID");
+        buttonClose = new JButton("Закрыть");
         textFieldId = new JTextField();
         textFieldId.setText(scriptViewDetail.id());
         labelUseIn = new JLabel("Используется в:");
