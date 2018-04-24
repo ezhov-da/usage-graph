@@ -3,6 +3,7 @@ package ru.ezhov.graph;
 
 import ru.ezhov.graph.script.Scripts;
 import ru.ezhov.graph.script.ScriptsFactory;
+import ru.ezhov.graph.util.PerscentScreenDimension;
 import ru.ezhov.graph.view.GraphPanel;
 
 import javax.swing.*;
@@ -28,9 +29,10 @@ public class App {
                 @Override
                 public void run() {
                     JFrame frame = new JFrame("Использование скриптов");
+                    frame.setIconImage(new ImageIcon(this.getClass().getResource("/graph_16x16.png")).getImage());
                     frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
                     frame.getContentPane().add(new GraphPanel(scripts));
-                    frame.setSize(1000, 600);
+                    frame.setSize(new PerscentScreenDimension(90).dimension());
                     frame.setLocationRelativeTo(null);
                     frame.setVisible(true);
                 }

@@ -1,6 +1,7 @@
 package ru.ezhov.graph.view;
 
 import javax.swing.*;
+import javax.swing.border.EtchedBorder;
 import java.awt.*;
 
 public class ScriptListRender extends DefaultListCellRenderer {
@@ -9,7 +10,7 @@ public class ScriptListRender extends DefaultListCellRenderer {
         JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
         if (value != null) {
             ScriptViewDetail scriptViewDetail = (ScriptViewDetail) value;
-            String textEmpty = "<html><font color=\"red\">ID: %s</font>";
+            String textEmpty = "<html><font color=\"gray\">ID: %s</font>";
             String textOnlyParent = "<html>ID: %s<br>Используется в: %s скрипте(-ах)";
             String textOnlyChildren = "<html>ID: %s<br>Использует: %s скрипта(-ов)";
             String textAll = "<html>ID: %s<br>Используется в: %s скрипте(-ах)<br>Использует: %s скриптов";
@@ -26,6 +27,12 @@ public class ScriptListRender extends DefaultListCellRenderer {
 
             label.setText(finalText);
         }
+
+        label.setBorder(
+                //BorderFactory.createEmptyBorder(4, 2, 4, 2)
+                BorderFactory.createEtchedBorder(EtchedBorder.LOWERED)
+        );
+
 
         return label;
     }

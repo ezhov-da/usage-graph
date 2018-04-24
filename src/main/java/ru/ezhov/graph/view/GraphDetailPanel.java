@@ -1,5 +1,7 @@
 package ru.ezhov.graph.view;
 
+import ru.ezhov.graph.util.PerscentScreenDimension;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -54,11 +56,9 @@ public class GraphDetailPanel extends JPanel {
                     dialog.setTitle("Просмотр краткой информации о скрипте");
                     dialog.setModal(true);
                     dialog.add(new ScriptViewPanel(view));
-                    dialog.setSize(600, 600);
+                    dialog.setSize(new PerscentScreenDimension(70).dimension());
                     dialog.setLocationRelativeTo(null);
                     dialog.setVisible(true);
-
-
                 }
             }
         };

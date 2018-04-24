@@ -17,15 +17,10 @@ import ru.ezhov.graph.script.Script;
 import ru.ezhov.graph.script.Scripts;
 
 import javax.swing.*;
-import javax.swing.event.CaretEvent;
-import javax.swing.event.CaretListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -40,6 +35,7 @@ public class GraphPanel extends JPanel {
 
     private Scripts scripts;
     private ScriptListModel scriptListModel;
+    private JTabbedPane tabbedPane = new JTabbedPane();
 
     public GraphPanel(Scripts scripts) {
         this.scripts = scripts;
@@ -64,27 +60,26 @@ public class GraphPanel extends JPanel {
                 graph.addEdge(parent.id() + "Использует " + script.id(), parent.id(), script.id(), EdgeType.DIRECTED);
                 scriptViewParent.add(new DefaultScriptView(parent));
             }
-
-
             all.add(new ScriptViewDetail(script, scriptViewParent, scriptViewChildren));
         }
 
         JPanel panelSearchScript = new JPanel(new BorderLayout());
         final JTextField textField = new JTextField();
         panelSearchScript.add(textField, BorderLayout.CENTER);
-        JButton buttonClearSearch = new JButton("Очистить");
-        Dimension dimension = new Dimension(60, buttonClearSearch.getHeight());
+        JButton buttonClearSearch = new JButton(new ImageIcon(this.getClass().getResource("/clear_16x16.png")));
+        buttonClearSearch.setToolTipText("Очистить");
+        Dimension dimension = new Dimension(20, buttonClearSearch.getHeight());
         buttonClearSearch.setSize(dimension);
         buttonClearSearch.setMaximumSize(dimension);
         buttonClearSearch.setMinimumSize(dimension);
         buttonClearSearch.setPreferredSize(dimension);
         panelSearchScript.add(buttonClearSearch, BorderLayout.EAST);
-        textField.addCaretListener(new CaretListener() {
 
+        textField.addKeyListener(new KeyAdapter() {
             @Override
-            public void caretUpdate(CaretEvent e) {
+            public void keyReleased(KeyEvent e) {
                 String text = textField.getText();
-                if (text.length() >= 3) {
+                if (text.length() >= 3 || "".equals(text.trim())) {
                     scriptListModel.find(text);
                 }
             }
@@ -94,6 +89,7 @@ public class GraphPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 textField.setText("");
+                scriptListModel.find("");
             }
         });
 
@@ -126,15 +122,15 @@ public class GraphPanel extends JPanel {
                                 public void run() {
                                     ScriptViewDetail s = (ScriptViewDetail) list.getSelectedValue();
                                     GraphDetailPanel graphPanel = new GraphDetailPanel(s);
-                                    JDialog dialog = new JDialog();
-                                    dialog.setTitle("Детальная информация о скрипте");
-                                    dialog.setModal(true);
-                                    dialog.add(graphPanel);
-                                    dialog.setSize(700, 500);
-                                    dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-                                    dialog.setLocationRelativeTo(GraphPanel.this);
-                                    dialog.setVisible(true);
+                                    int tabCount = tabbedPane.getTabCount();
 
+                                    int index = tabbedPane.indexOfTab(s.id());
+                                    if (index != -1) {
+                                        tabbedPane.setSelectedIndex(index);
+                                    } else {
+                                        tabbedPane.addTab(s.id(), graphPanel);
+                                        tabbedPane.setSelectedIndex(tabCount);
+                                    }
                                 }
                             });
                         }
@@ -149,9 +145,7 @@ public class GraphPanel extends JPanel {
         // The BasicVisualizationServer<V,E> is parameterized by the edge types
         VisualizationViewer<Integer, String> vv =
                 new VisualizationViewer<Integer, String>(layout);
-        vv.setPreferredSize(new
-
-                Dimension(2000, 2000)); //Sets the viewing area size
+        vv.setPreferredSize(new Dimension(2000, 2000)); //Sets the viewing area size
         vv.setVertexToolTipTransformer(new ToStringLabeller());
         vv.setEdgeToolTipTransformer(
                 new Transformer<String, String>() {
@@ -187,13 +181,15 @@ public class GraphPanel extends JPanel {
 
         splitPane.setLeftComponent(panelWithList);
 
-        JPanel panelGraphCommon = new JPanel();
+        JPanel panelGraph = new JPanel();
         JLabel label = new JLabel("<html><center>Нажмите 'p' для возможности перетаскивания вершин <p>Нажмите 't' для перетаскивания всего графа");
         label.setHorizontalAlignment(SwingConstants.CENTER);
-        panelGraphCommon.add(label, BorderLayout.NORTH);
-        panelGraphCommon.add(panelVV, BorderLayout.CENTER);
+        panelGraph.add(label, BorderLayout.NORTH);
+        panelGraph.add(panelVV, BorderLayout.CENTER);
 
-        splitPane.setRightComponent(panelGraphCommon);
+        tabbedPane.addTab("ГРАФ", panelGraph);
+
+        splitPane.setRightComponent(tabbedPane);
 
         add(splitPane, BorderLayout.CENTER);
     }
@@ -225,5 +221,4 @@ public class GraphPanel extends JPanel {
             this.selected = selected;
         }
     }
-
 }
