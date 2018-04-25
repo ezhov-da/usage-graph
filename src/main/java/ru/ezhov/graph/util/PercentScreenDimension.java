@@ -2,10 +2,10 @@ package ru.ezhov.graph.util;
 
 import java.awt.*;
 
-public class PerscentScreenDimension implements ScreenDimension {
+public class PercentScreenDimension implements ScreenDimension {
     private int percent;
 
-    public PerscentScreenDimension(int percent) {
+    public PercentScreenDimension(int percent) {
         this.percent = percent;
     }
 

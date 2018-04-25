@@ -5,7 +5,9 @@ import ru.ezhov.graph.script.Scripts;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
+import javax.swing.table.TableStringConverter;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Arrays;
@@ -31,7 +33,39 @@ public class TableScriptPanel extends JPanel {
         table = new JTable();
         tableScriptModel = new TableScriptModel(scripts);
         table.setModel(tableScriptModel);
-        table.setAutoCreateRowSorter(true);
+        table.setRowSorter(new TableRowSorter<TableModel>(tableScriptModel) {
+            private final TableStringConverter tableStringConverterAllTask =
+                    new TableStringConverter() {
+                        @Override
+                        public String toString(TableModel model, int row, int column) {
+                            String value = model.getValueAt(row, column).toString();
+
+                            switch (column) {
+                                case 0:
+                                    return value;
+                                case 1:
+                                case 2:
+                                case 3:
+                                case 4:
+                                    return numberForEquals(value);
+                                default:
+                                    return "";
+                            }
+                        }
+
+                        private String numberForEquals(String val) {
+                            int len = val.length();
+                            int adds = 100 - len;
+                            String res = new String(new char[adds]).replace("\0", "0") + val;
+                            return res;
+                        }
+                    };
+
+            @Override
+            public TableStringConverter getStringConverter() {
+                return tableStringConverterAllTask;
+            }
+        });
         add(searchPanel, BorderLayout.NORTH);
         add(new JScrollPane(table), BorderLayout.CENTER);
 
@@ -63,6 +97,21 @@ public class TableScriptPanel extends JPanel {
         for (TableScriptEvent tableScriptEvent : scriptEventList) {
             tableScriptEvent.event(eventType, e, script);
         }
+    }
+
+    private RowFilter rowFilter() {
+        return new RowFilter() {
+            @Override
+            public boolean include(Entry entry) {
+                String text = searchPanel.getText();
+                if ("".equals(text)) {
+                    return true;
+                } else {
+                    String id = (String) entry.getValue(0);
+                    return id.toLowerCase().trim().contains(text.toLowerCase().trim());
+                }
+            }
+        };
     }
 
     private class SearchPanel extends JPanel {
@@ -133,7 +182,7 @@ public class TableScriptPanel extends JPanel {
 
         @Override
         public Object getValueAt(int rowIndex, int columnIndex) {
-            Script script = scripts.all().get(table.convertRowIndexToModel(rowIndex));
+            Script script = scripts.all().get(rowIndex);
 
             switch (columnIndex) {
                 case 0:
@@ -147,8 +196,7 @@ public class TableScriptPanel extends JPanel {
                 case 4:
                     double childrenCount = scripts.children(script.id()).size();
                     double parentCount = scripts.parents(script.id()).size();
-                    double v = (childrenCount + parentCount) != 0 ? childrenCount / (childrenCount + parentCount) : 0;
-                    return v;
+                    return (childrenCount + parentCount) != 0 ? childrenCount / (childrenCount + parentCount) : 0;
                 default:
                     throw new UnsupportedOperationException("Неподдерживаемое кол-во столбцов");
 
@@ -159,20 +207,5 @@ public class TableScriptPanel extends JPanel {
         public boolean isCellEditable(int rowIndex, int columnIndex) {
             return false;
         }
-    }
-
-    private RowFilter rowFilter() {
-        return new RowFilter() {
-            @Override
-            public boolean include(Entry entry) {
-                String text = searchPanel.getText();
-                if ("".equals(text)) {
-                    return true;
-                } else {
-                    String id = (String) entry.getValue(0);
-                    return id.toLowerCase().trim().contains(text.toLowerCase().trim());
-                }
-            }
-        };
     }
 }

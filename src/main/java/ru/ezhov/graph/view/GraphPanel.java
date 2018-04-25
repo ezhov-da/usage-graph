@@ -15,15 +15,17 @@ import edu.uci.ics.jung.visualization.renderers.BasicVertexLabelRenderer;
 import org.apache.commons.collections15.Transformer;
 import ru.ezhov.graph.script.Script;
 import ru.ezhov.graph.script.Scripts;
+import ru.ezhov.graph.util.PercentScreenDimension;
 import ru.ezhov.graph.view.table.EventType;
 import ru.ezhov.graph.view.table.TableScriptEvent;
 import ru.ezhov.graph.view.table.TableScriptPanel;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -38,7 +40,6 @@ public class GraphPanel extends JPanel {
 
     private Scripts scripts;
     private TableScriptPanel tableScriptPanel;
-    private ScriptListModel scriptListModel;
     private JTabbedPane tabbedPane = new JTabbedPane();
 
     public GraphPanel(Scripts scripts) {
@@ -73,7 +74,7 @@ public class GraphPanel extends JPanel {
                                         children.add(new DefaultScriptView(s));
                                     }
 
-                                    List<Script> parentS = scripts.children(script.id());
+                                    List<Script> parentS = scripts.parents(script.id());
                                     for (Script s : parentS) {
                                         parent.add(new DefaultScriptView(s));
                                     }
@@ -122,7 +123,7 @@ public class GraphPanel extends JPanel {
 
                 Dimension(2000, 2000)); // sets the initial size of the space
         // The BasicVisualizationServer<V,E> is parameterized by the edge types
-        VisualizationViewer<Integer, String> vv =
+        final VisualizationViewer<Integer, String> vv =
                 new VisualizationViewer<Integer, String>(layout);
         vv.setPreferredSize(new Dimension(2000, 2000)); //Sets the viewing area size
         vv.setVertexToolTipTransformer(new ToStringLabeller());
@@ -157,10 +158,32 @@ public class GraphPanel extends JPanel {
         splitPane.setLeftComponent(tableScriptPanel);
 
         JPanel panelGraph = new JPanel();
+
+        JPanel panelTop = new JPanel(new BorderLayout());
+
         JLabel label = new JLabel("<html><center>Нажмите 'p' для возможности перетаскивания вершин <p>Нажмите 't' для перетаскивания всего графа");
+        JButton buttonSaveToJpg = new JButton("Сохранить в JPG");
+        buttonSaveToJpg.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                BufferedImage img = new BufferedImage(vv.getWidth(), vv.getHeight(), BufferedImage.TYPE_INT_RGB);
+                vv.print(img.getGraphics()); // or: panel.printAll(...);
+                try {
+                    ImageIO.write(img, "jpg", new File("panel.jpg"));
+                } catch (Exception ee) {
+                    ee.printStackTrace();
+                }
+            }
+        });
+        panelTop.add(label, BorderLayout.CENTER);
+        JPanel panelButton = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        panelButton.add(buttonSaveToJpg);
+        panelTop.add(panelButton, BorderLayout.EAST);
+
         label.setHorizontalAlignment(SwingConstants.CENTER);
-        panelGraph.add(label, BorderLayout.NORTH);
+        panelGraph.add(panelTop, BorderLayout.NORTH);
         panelGraph.add(panelVV, BorderLayout.CENTER);
+
 
         tabbedPane.addTab("ГРАФ", panelGraph);
         tabbedPane.setTabComponentAt(0, new TabHeader("ГРАФ", tabbedPane));
@@ -168,6 +191,7 @@ public class GraphPanel extends JPanel {
         splitPane.setRightComponent(tabbedPane);
 
         add(splitPane, BorderLayout.CENTER);
+
     }
 
     private class MyVertexFillPaintFunction<V> implements Transformer<V, Paint> {
@@ -200,7 +224,8 @@ public class GraphPanel extends JPanel {
 
     private class TabHeader extends JPanel {
         private JLabel label;
-        private JButton button;
+        private JButton buttonFly;
+        private JButton buttonClose;
         private JTabbedPane tabbedPane;
         private String text;
 
@@ -209,7 +234,42 @@ public class GraphPanel extends JPanel {
             this.text = text;
             setOpaque(false);
             label = new JLabel(text);
-            button = new JButton("x");
+
+            buttonFly = new JButton(new ImageIcon(this.getClass().getResource("/not_fly_16x16.png")));
+            buttonFly.setToolTipText("Открепить");
+            setDefaultButtonProperties(buttonFly);
+
+            buttonClose = new JButton("x");
+            setDefaultButtonProperties(buttonClose);
+            setLayout(new BorderLayout());
+            add(label, BorderLayout.CENTER);
+            JPanel panelButtons = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+            panelButtons.setOpaque(false);
+            panelButtons.add(buttonFly);
+            if (!"ГРАФ".equals(text)) {
+                panelButtons.add(buttonClose);
+            }
+            add(panelButtons, BorderLayout.EAST);
+            buttonClose.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    tabbedPane.remove(tabbedPane.indexOfTab(text));
+                }
+            });
+
+            buttonFly.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    int index = tabbedPane.indexOfTab(text);
+                    Component component = tabbedPane.getComponentAt(index);
+                    tabbedPane.remove(index);
+                    new FlyFrame(text, tabbedPane, component);
+                }
+            });
+
+        }
+
+        private void setDefaultButtonProperties(JButton button) {
             Dimension dimension = new Dimension(20, 20);
             button.setMaximumSize(dimension);
             button.setMinimumSize(dimension);
@@ -217,17 +277,7 @@ public class GraphPanel extends JPanel {
             button.setPreferredSize(dimension);
             button.setSize(dimension);
             button.setFont(new Font(new JLabel().getFont().getName(), Font.PLAIN, 8));
-            setLayout(new BorderLayout());
-            add(label, BorderLayout.CENTER);
-            if (!"ГРАФ".equals(text)) {
-                add(button, BorderLayout.EAST);
-            }
-            button.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    tabbedPane.remove(tabbedPane.indexOfTab(text));
-                }
-            });
+
         }
 
         @Override
@@ -241,6 +291,38 @@ public class GraphPanel extends JPanel {
         @Override
         public int hashCode() {
             return text != null ? text.hashCode() : 0;
+        }
+    }
+
+    private class FlyFrame {
+        private JFrame frame;
+        private JTabbedPane tabbedPane;
+        private String text;
+        private Component component;
+
+        public FlyFrame(final String text, final JTabbedPane tabbedPane, final Component component) {
+            this.tabbedPane = tabbedPane;
+            this.text = text;
+            this.component = component;
+
+            frame = new JFrame(text);
+            frame.setIconImage(new ImageIcon(this.getClass().getResource("/graph_16x16.png")).getImage());
+            frame.addWindowListener(new WindowAdapter() {
+
+                @Override
+                public void windowClosing(WindowEvent e) {
+                    frame.remove(component);
+                    tabbedPane.addTab(text, component);
+                    tabbedPane.setTabComponentAt(tabbedPane.getTabCount() - 1, new TabHeader(text, tabbedPane));
+                    tabbedPane.setSelectedIndex(tabbedPane.getTabCount() - 1);
+                }
+            });
+
+            frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+            frame.add(component);
+            frame.setSize(new PercentScreenDimension(70).dimension());
+            frame.setLocationRelativeTo(null);
+            frame.setVisible(true);
         }
     }
 }
