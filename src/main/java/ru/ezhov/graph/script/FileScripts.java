@@ -2,7 +2,8 @@ package ru.ezhov.graph.script;
 
 import java.io.File;
 import java.util.*;
-import java.util.regex.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 class FileScripts implements Scripts {
 
@@ -65,7 +66,6 @@ class FileScripts implements Scripts {
     }
 
     private void initParentAndChildren() throws Exception {
-        String patternTemplate = "getScriptByPath\\(\"%s\"\\)";
         Set<Map.Entry<String, Script>> entries = scripts.entrySet();
         for (Map.Entry<String, Script> entry : entries) {
             System.out.println(">>> " + entry.getKey());
@@ -74,7 +74,6 @@ class FileScripts implements Scripts {
                 if (entry.getKey().equals(entryInner.getKey())) {
                     continue;
                 }
-
                 //если внутренний скрипт использует внешний скрипт,
                 //тогда для внутреннего скрипта внешний - ребенок, а для внешнего внутренний родитель
                 if (usageScript.get(entryInner.getKey()).contains(entry.getKey())) {
