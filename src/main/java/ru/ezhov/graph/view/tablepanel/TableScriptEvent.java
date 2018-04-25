@@ -1,4 +1,4 @@
-package ru.ezhov.graph.view.table;
+package ru.ezhov.graph.view.tablepanel;
 
 import ru.ezhov.graph.script.Script;
 

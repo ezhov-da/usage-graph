@@ -27,7 +27,7 @@ public class App {
 					JFrame frame = new JFrame("Использование скриптов");
 					frame.setIconImage(new ImageIcon(this.getClass().getResource("/graph_16x16.png")).getImage());
 					frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-//					frame.getContentPane().add(new GraphPanel(scripts));
+//					frame.getContentPane().add(new CommonPanel(scripts));
 					frame.getContentPane().add(new BasicPanel());
 					frame.setSize(new PercentScreenDimension(90).dimension());
 					frame.setLocationRelativeTo(null);
