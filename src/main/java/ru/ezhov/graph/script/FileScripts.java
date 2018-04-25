@@ -9,7 +9,7 @@ class FileScripts implements Scripts {
 
     private File root;
     private Map<String, Script> scripts = new HashMap<>();
-    private Map<String, List<String>> parents = new HashMap<>();
+     private Map<String, List<String>> parents = new HashMap<>();
     private Map<String, List<String>> children = new HashMap<>();
 
     public FileScripts(File root) throws Exception {
@@ -26,7 +26,7 @@ class FileScripts implements Scripts {
             }
         } else {
             String path = file.getAbsolutePath();
-            System.out.println(path);
+            System.out.println("> " + path);
             path = path.replace('\\', '/');
             int index = path.indexOf("scripts");
             try {
@@ -47,6 +47,8 @@ class FileScripts implements Scripts {
                 if (entry.getKey().equals(entryInner.getKey())) {
                     continue;
                 }
+                System.out.println(">>> " + entry.getKey());
+                                
                 //если внутренний скрипт использует внешний скрипт,
                 //тогда для внутреннего скрипта внешний - ребенок, а для внешнего внутренний родитель
                 Pattern patternSource = Pattern.compile(String.format(patternTemplate, entry.getKey()));
