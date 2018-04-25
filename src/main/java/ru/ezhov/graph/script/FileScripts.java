@@ -2,20 +2,23 @@ package ru.ezhov.graph.script;
 
 import java.io.File;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.regex.*;
 
 class FileScripts implements Scripts {
 
     private File root;
     private Map<String, Script> scripts = new HashMap<>();
-     private Map<String, List<String>> parents = new HashMap<>();
+    private Map<String, List<String>> parents = new HashMap<>();
     private Map<String, List<String>> children = new HashMap<>();
+    private Map<String, List<String>> usageScript = new HashMap<>();
 
     public FileScripts(File root) throws Exception {
         this.root = root;
+        long start = System.currentTimeMillis();
         initialScripts(root);
         initParentAndChildren();
+        System.out.println("SUCCESS SCRIPT ANALYSE: " + (System.currentTimeMillis() - start) + " ms COUNT SCRIPTS: " +
+                scripts.size());
     }
 
     private void initialScripts(File file) {
@@ -31,7 +34,30 @@ class FileScripts implements Scripts {
             int index = path.indexOf("scripts");
             try {
                 String id = "/" + path.substring(index, path.length());
-                scripts.put(id, new FileScript(id, file));
+                Script script = new FileScript(id, file);
+                scripts.put(id, script);
+
+                String text = script.text();
+                Pattern pattern = Pattern.compile("(?<=getScriptByPath\\(\").+?(?=\")");
+                Matcher matcher = pattern.matcher(text);
+
+                List<String> groups = new ArrayList<>();
+                while (matcher.find()) {
+                    String textFind = matcher.group();
+                    groups.add(textFind);
+                }
+
+                if (!usageScript.containsKey(id)) {
+                    usageScript.put(id, new ArrayList<String>());
+                }
+
+                List<String> uses = usageScript.get(id);
+                for (String textFind : groups) {
+                    if (!uses.contains(textFind)) {
+                        uses.add(textFind);
+                    }
+                }
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -42,28 +68,22 @@ class FileScripts implements Scripts {
         String patternTemplate = "getScriptByPath\\(\"%s\"\\)";
         Set<Map.Entry<String, Script>> entries = scripts.entrySet();
         for (Map.Entry<String, Script> entry : entries) {
+            System.out.println(">>> " + entry.getKey());
             for (Map.Entry<String, Script> entryInner : entries) {
                 //не используем самого себя
                 if (entry.getKey().equals(entryInner.getKey())) {
                     continue;
                 }
-                System.out.println(">>> " + entry.getKey());
-                                
+
                 //если внутренний скрипт использует внешний скрипт,
                 //тогда для внутреннего скрипта внешний - ребенок, а для внешнего внутренний родитель
-                Pattern patternSource = Pattern.compile(String.format(patternTemplate, entry.getKey()));
-                String entryInnerText = entryInner.getValue().text().replaceAll("\r\n", "");
-                Matcher matcher = patternSource.matcher(entryInnerText);
-                if (matcher.find()) {
+                if (usageScript.get(entryInner.getKey()).contains(entry.getKey())) {
                     putChildren(entryInner.getKey(), entry.getKey());
                     putParent(entry.getKey(), entryInner.getKey());
                 }
                 //если внешний скрипт использует внутренний скрипт
                 //тогда для внешнего внутренний ребенок, а для внутреннего внешний родитель
-                Pattern patternFind = Pattern.compile(String.format(patternTemplate, entryInner.getKey()));
-                String entryText = entry.getValue().text().replaceAll("\r\n", "");
-                matcher = patternFind.matcher(entryText);
-                if (matcher.find()) {
+                if (usageScript.get(entry.getKey()).contains(entryInner.getKey())) {
                     putParent(entryInner.getKey(), entry.getKey());
                     putChildren(entry.getKey(), entryInner.getKey());
                 }
