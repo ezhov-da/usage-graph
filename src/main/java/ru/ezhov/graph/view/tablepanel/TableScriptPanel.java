@@ -2,6 +2,7 @@ package ru.ezhov.graph.view.tablepanel;
 
 import ru.ezhov.graph.script.Script;
 import ru.ezhov.graph.script.Scripts;
+import ru.ezhov.graph.view.JTextFieldExtends;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
@@ -115,12 +116,12 @@ public class TableScriptPanel extends JPanel {
     }
 
     private class SearchPanel extends JPanel {
-        private JTextField textFieldSearch = new JTextField();
+        private JTextField textFieldSearch;
         private JButton buttonClearSearch;
 
         public SearchPanel() {
             setLayout(new BorderLayout());
-            textFieldSearch = new JTextField();
+            textFieldSearch = new JTextFieldExtends("Введите строку для поиска по ID...");
             buttonClearSearch = new JButton(new ImageIcon(this.getClass().getResource("/clear_16x16.png")));
             buttonClearSearch.setToolTipText("Очистить");
             Dimension dimension = new Dimension(20, buttonClearSearch.getHeight());

@@ -5,7 +5,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 public class FilePathStore implements PathStore {
@@ -25,15 +24,14 @@ public class FilePathStore implements PathStore {
     }
 
     @Override
-    public void path(String path, Date date) throws Exception {
+    public void path(String path) throws Exception {
         List<Path> paths = paths();
-
-        if (paths.contains(path)) {
-            int index = paths.indexOf(path);
-            Path p = paths.get(index);
-            p.date(date);
-        } else {
-            paths.add(new DefaultPath(path, date));
+        for (int i = 0; i < paths.size(); i++) {
+            if (paths.get(i).path().equals(path)) {
+                paths.remove(paths.get(i));
+                paths.add(0, new DefaultPath(path));
+                break;
+            }
         }
         write(new File(NAME_FILE_STORE));
     }
@@ -46,9 +44,7 @@ public class FilePathStore implements PathStore {
 
                 while ((line = bufferedReader.readLine()) != null) {
                     String[] s = line.split(" ");
-                    if (s.length == 2) {
-                        paths.add(new DefaultPath(s[0], dateFormat.parse(s[1])));
-                    }
+                    paths.add(new DefaultPath(s[0]));
                 }
                 return paths;
             }
@@ -60,7 +56,7 @@ public class FilePathStore implements PathStore {
 
         try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file))) {
             for (Path path : paths) {
-                bufferedWriter.write(path.path() + " " + dateFormat.format(path.date()) + "\n");
+                bufferedWriter.write(path.path() + "\n");
             }
         }
     }

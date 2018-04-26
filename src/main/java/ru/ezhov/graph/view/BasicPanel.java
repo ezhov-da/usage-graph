@@ -15,7 +15,6 @@ import java.awt.event.ItemListener;
 import java.io.File;
 import java.io.Serializable;
 import java.util.Collections;
-import java.util.Date;
 import java.util.logging.Logger;
 
 /**
@@ -47,15 +46,14 @@ public class BasicPanel extends JPanel {
         private JLabel label;
         private JTextField textField;
         private JButton buttonOpenDir;
-        private JFileChooser fileChooser = new JFileChooser("E:\\MDM\\branches\\trunk\\Scripts\\scripts");
+        private JFileChooser fileChooser = new JFileChooser("");
         private JComboBox comboBoxLastUser;
 
         public DirectoryPanel() {
             setLayout(new BorderLayout());
             setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
             label = new JLabel("Путь для загрузки:");
-            textField = new JTextField();
-            textField.setText("E:\\MDM\\branches\\trunk\\Scripts\\scripts");
+            textField = new JTextFieldExtends("Выберите папку со скриптами...");
             buttonOpenDir = new JButton("Выбрать");
             fileChooser.setDialogTitle("Выберите папку со скриптами");
             fileChooser.setDialogType(JFileChooser.OPEN_DIALOG);
@@ -107,7 +105,7 @@ public class BasicPanel extends JPanel {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     try {
-                        pathStore.path(textField.getText(), new Date());
+                        pathStore.path(textField.getText());
                         comboBoxModel.reload();
                     } catch (Exception e1) {
                         e1.printStackTrace();

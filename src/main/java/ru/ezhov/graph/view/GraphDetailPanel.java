@@ -55,6 +55,7 @@ public class GraphDetailPanel extends JPanel {
                     ScriptView view = (ScriptView) list.getSelectedValue();
                     JDialog dialog = new JDialog();
                     dialog.setTitle("Просмотр краткой информации о скрипте");
+                    dialog.setIconImage(new ImageIcon(this.getClass().getResource("/graph_16x16.png")).getImage());
                     dialog.setModal(true);
                     dialog.add(new ScriptViewPanel(view));
                     dialog.setSize(new PercentScreenDimension(70).dimension());

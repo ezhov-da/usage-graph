@@ -12,24 +12,13 @@ public class DefaultPath implements Path {
         return path;
     }
 
-    public DefaultPath(String path, Date date) {
+    public DefaultPath(String path) {
         this.path = path;
-        this.date = date;
     }
 
     @Override
     public String path() {
         return path;
-    }
-
-    @Override
-    public Date date() {
-        return date;
-    }
-
-    @Override
-    public void date(Date date) {
-        this.date = date;
     }
 
     @Override
