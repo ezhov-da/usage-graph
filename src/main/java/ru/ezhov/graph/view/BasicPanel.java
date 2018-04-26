@@ -41,7 +41,6 @@ public class BasicPanel extends JPanel {
         add(panelCenter, BorderLayout.CENTER);
     }
 
-
     private class DirectoryPanel extends JPanel {
         private JLabel label;
         private JTextField textField;
