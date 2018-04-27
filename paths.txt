@@ -1,2 +1,1 @@
 scripts
-E:\MDM\branches\trunk\Scripts\scripts
