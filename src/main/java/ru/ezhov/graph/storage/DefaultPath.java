@@ -26,7 +26,7 @@ public class DefaultPath implements Path {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        DefaultPath that = (DefaulktPath) o;
+        DefaultPath that = (DefaultPath) o;
 
         return path != null ? path.equals(that.path) : that.path == null;
     }
