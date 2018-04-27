@@ -1,4 +1,4 @@
-package ru.ezhov.graph.view;
+package ru.ezhov.graph.gui;
 
 import edu.uci.ics.jung.algorithms.layout.FRLayout;
 import edu.uci.ics.jung.algorithms.layout.GraphElementAccessor;
@@ -194,6 +194,17 @@ public class GraphPanel extends JPanel implements ActionListener {
     public JPanel startFunction() {
         Graph<String, String> g = getGraph();
         Layout<String, String> layout = new FRLayout<String, String>(g);
+
+        int size = scripts.all().size();
+
+        if (size <= 40) {
+            //DEFAULT
+        } else if (size > 40 & size < 150) {
+            layout.setSize(new Dimension(1000, 1000));
+        } else {
+            layout.setSize(new Dimension(2000, 2000));
+        }
+
         vv = new VisualizationViewer<String, String>(layout);
         PickedState<String> picked_state = vv.getPickedVertexState();
         self_loop = new SelfLoopEdgePredicate<String, String>();

@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package ru.ezhov.graph.view;
+package ru.ezhov.graph.gui.components;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,11 +12,11 @@ import java.awt.*;
 /**
  * @author RRNDeonisiusEZH
  */
-public class JTextFieldExtends extends JTextField {
+public class JTextFieldWithText extends JTextField {
 
 	private String text;
 
-	public JTextFieldExtends(String text) {
+	public JTextFieldWithText(String text) {
 		this.text = text;
 	}
 

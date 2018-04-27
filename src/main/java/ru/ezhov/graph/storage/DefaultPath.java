@@ -1,4 +1,4 @@
-package ru.ezhov.graph.util;
+package ru.ezhov.graph.storage;
 
 import java.util.Date;
 
@@ -26,7 +26,7 @@ public class DefaultPath implements Path {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        DefaultPath that = (DefaultPath) o;
+        DefaultPath that = (DefaulktPath) o;
 
         return path != null ? path.equals(that.path) : that.path == null;
     }

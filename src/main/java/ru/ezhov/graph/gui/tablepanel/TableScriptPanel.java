@@ -1,8 +1,8 @@
-package ru.ezhov.graph.view.tablepanel;
+package ru.ezhov.graph.gui.tablepanel;
 
 import ru.ezhov.graph.script.Script;
 import ru.ezhov.graph.script.Scripts;
-import ru.ezhov.graph.view.JTextFieldExtends;
+import ru.ezhov.graph.gui.components.JTextFieldWithText;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
@@ -121,7 +121,7 @@ public class TableScriptPanel extends JPanel {
 
         public SearchPanel() {
             setLayout(new BorderLayout());
-            textFieldSearch = new JTextFieldExtends("Введите строку для поиска по ID...");
+            textFieldSearch = new JTextFieldWithText("Введите строку для поиска по ID...");
             buttonClearSearch = new JButton(new ImageIcon(this.getClass().getResource("/clear_16x16.png")));
             buttonClearSearch.setToolTipText("Очистить");
             Dimension dimension = new Dimension(20, buttonClearSearch.getHeight());

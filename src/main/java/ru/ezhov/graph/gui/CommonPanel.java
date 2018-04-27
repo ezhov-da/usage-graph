@@ -1,11 +1,11 @@
-package ru.ezhov.graph.view;
+package ru.ezhov.graph.gui;
 
 import ru.ezhov.graph.script.Script;
 import ru.ezhov.graph.script.Scripts;
 import ru.ezhov.graph.util.PercentScreenDimension;
-import ru.ezhov.graph.view.tablepanel.EventType;
-import ru.ezhov.graph.view.tablepanel.TableScriptEvent;
-import ru.ezhov.graph.view.tablepanel.TableScriptPanel;
+import ru.ezhov.graph.gui.tablepanel.EventType;
+import ru.ezhov.graph.gui.tablepanel.TableScriptEvent;
+import ru.ezhov.graph.gui.tablepanel.TableScriptPanel;
 
 import javax.swing.*;
 import java.awt.*;

@@ -1,4 +1,4 @@
-package ru.ezhov.graph.view;
+package ru.ezhov.graph.gui;
 
 public class Selected {
     private String selected;

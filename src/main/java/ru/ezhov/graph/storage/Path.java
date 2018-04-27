@@ -1,4 +1,4 @@
-package ru.ezhov.graph.util;
+package ru.ezhov.graph.storage;
 
 public interface Path {
     public String path();

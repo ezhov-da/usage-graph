@@ -1,4 +1,4 @@
-package ru.ezhov.graph.view;
+package ru.ezhov.graph.gui;
 
 import javax.swing.*;
 import java.awt.*;

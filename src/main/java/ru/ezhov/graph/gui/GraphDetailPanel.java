@@ -1,5 +1,7 @@
-package ru.ezhov.graph.view;
+package ru.ezhov.graph.gui;
 
+import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
+import ru.ezhov.graph.gui.components.SyntaxTextAreaWithSearchPanel;
 import ru.ezhov.graph.util.PercentScreenDimension;
 
 import javax.swing.*;
@@ -23,7 +25,7 @@ public class GraphDetailPanel extends JPanel {
     private JLabel labelUseIn;
     private JList listUseIn;
     private JLabel labelText;
-    private TextAreaPanel textAreaText;
+    private SyntaxTextAreaWithSearchPanel syntaxTextAreaWithSearchPanel;
 
 
     public GraphDetailPanel(ScriptViewDetail scriptViewDetail) {
@@ -45,7 +47,7 @@ public class GraphDetailPanel extends JPanel {
         listUse.setCellRenderer(new DetailPanelListRender());
         labelText = new JLabel("Текст");
 
-        textAreaText = new TextAreaPanel();
+        syntaxTextAreaWithSearchPanel = new SyntaxTextAreaWithSearchPanel(SyntaxConstants.SYNTAX_STYLE_JAVASCRIPT);
 
         MouseAdapter mouseAdapter = new MouseAdapter() {
             @Override
@@ -130,12 +132,12 @@ public class GraphDetailPanel extends JPanel {
         panel.add(labelText, BorderLayout.NORTH);
         labelText.setHorizontalAlignment(SwingConstants.CENTER);
         try {
-            textAreaText.text(scriptViewDetail.text());
+            syntaxTextAreaWithSearchPanel.text(scriptViewDetail.text());
         } catch (Exception e) {
             e.printStackTrace();
-            textAreaText.text("Не удалось получить текст скрипта");
+            syntaxTextAreaWithSearchPanel.text("Не удалось получить текст скрипта");
         }
-        panel.add(textAreaText, BorderLayout.CENTER);
+        panel.add(syntaxTextAreaWithSearchPanel, BorderLayout.CENTER);
         return panel;
     }
 }

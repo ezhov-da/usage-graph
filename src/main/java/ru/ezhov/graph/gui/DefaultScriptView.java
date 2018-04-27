@@ -1,4 +1,4 @@
-package ru.ezhov.graph.view;
+package ru.ezhov.graph.gui;
 
 import ru.ezhov.graph.script.Script;
 

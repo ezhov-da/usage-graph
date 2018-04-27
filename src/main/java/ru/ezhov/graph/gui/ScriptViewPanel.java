@@ -1,8 +1,7 @@
-package ru.ezhov.graph.view;
+package ru.ezhov.graph.gui;
 
-import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
-import org.fife.ui.rtextarea.RTextScrollPane;
+import ru.ezhov.graph.gui.components.SyntaxTextAreaWithSearchPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,7 +11,7 @@ public class ScriptViewPanel extends JPanel {
     private JTextField textFieldId;
 
     private JLabel labelText;
-    private RSyntaxTextArea textAreaText;
+    private SyntaxTextAreaWithSearchPanel syntaxTextAreaWithSearchPanel;
 
     private ScriptView scriptView;
 
@@ -30,18 +29,16 @@ public class ScriptViewPanel extends JPanel {
 
         JPanel panelCenter = new JPanel(new BorderLayout());
         labelText = new JLabel("Текст");
-        textAreaText = new RSyntaxTextArea(20, 60);
-        textAreaText.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVASCRIPT);
-        textAreaText.setCodeFoldingEnabled(true);
+        syntaxTextAreaWithSearchPanel = new SyntaxTextAreaWithSearchPanel(SyntaxConstants.SYNTAX_STYLE_JAVASCRIPT);
         panelCenter.add(labelText, BorderLayout.NORTH);
-        panelCenter.add(new RTextScrollPane(textAreaText), BorderLayout.CENTER);
+        panelCenter.add(syntaxTextAreaWithSearchPanel, BorderLayout.CENTER);
 
         add(panelTop, BorderLayout.NORTH);
         add(panelCenter, BorderLayout.CENTER);
         try {
-            textAreaText.setText(scriptView.text());
+            syntaxTextAreaWithSearchPanel.text(scriptView.text());
         } catch (Exception e) {
-            textAreaText.setText("Не удалось получить текст скрипта");
+            syntaxTextAreaWithSearchPanel.text("Не удалось получить текст скрипта");
             e.printStackTrace();
         }
     }
