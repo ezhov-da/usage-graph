@@ -1,4 +1,4 @@
-package ru.ezhov.graph.gui.graphpanel;
+package ru.ezhov.graph.gui.graphdetailpanel;
 
 import edu.uci.ics.jung.algorithms.layout.FRLayout;
 import edu.uci.ics.jung.algorithms.layout.GraphElementAccessor;
@@ -22,14 +22,12 @@ import edu.uci.ics.jung.visualization.picking.PickedInfo;
 import edu.uci.ics.jung.visualization.picking.PickedState;
 import edu.uci.ics.jung.visualization.renderers.BasicEdgeArrowRenderingSupport;
 import edu.uci.ics.jung.visualization.renderers.CenterEdgeArrowRenderingSupport;
-import edu.uci.ics.jung.visualization.renderers.Renderer;
 import org.apache.commons.collections15.Predicate;
 import org.apache.commons.collections15.Transformer;
 import org.apache.commons.collections15.functors.ConstantTransformer;
 import org.apache.commons.collections15.functors.MapTransformer;
 import ru.ezhov.graph.gui.Selected;
 import ru.ezhov.graph.gui.domain.ScriptGui;
-import ru.ezhov.graph.gui.domain.ScriptsGui;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -38,14 +36,13 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.Point2D;
 import java.util.*;
-import java.util.List;
 
-public class GraphPanel extends JPanel implements ActionListener {
+public class GraphDetailPanel extends JPanel implements ActionListener {
 
     private static final int GRADIENT_NONE = 0;
     private static final int GRADIENT_RELATIVE = 1;
     private static int gradient_level = GRADIENT_NONE;
-    private ScriptsGui scripts;
+    private ScriptGui scriptGui;
     private Selected selected;
     private JCheckBox v_color;
     private JCheckBox e_color;
@@ -99,9 +96,9 @@ public class GraphPanel extends JPanel implements ActionListener {
     private Set<String> seedVertices = new HashSet<String>();
 
 
-    public GraphPanel(ScriptsGui scripts, Selected selected) {
+    public GraphDetailPanel(ScriptGui scriptGui) {
         setLayout(new BorderLayout());
-        this.scripts = scripts;
+        this.scriptGui = scriptGui;
         this.selected = selected;
         start();
     }
@@ -113,6 +110,7 @@ public class GraphPanel extends JPanel implements ActionListener {
     public JPanel startFunction() {
         Graph<String, String> g = getGraph();
         graphLayout = new FRLayout<String, String>(g);
+        System.out.println(graphLayout.getSize());
 
         vv = new VisualizationViewer<String, String>(graphLayout);
         PickedState<String> picked_state = vv.getPickedVertexState();
@@ -185,29 +183,26 @@ public class GraphPanel extends JPanel implements ActionListener {
         Set<String> sources = new HashSet<String>();
         Set<String> sinks = new HashSet<String>();
 
-        List<ScriptGui> scriptsGuis = scripts.all();
-        for (ScriptGui script : scriptsGuis) {
-            String id = script.id();
-            Set<ScriptGui> parents = script.parents();
-            Set<ScriptGui> children = script.children();
-            double childrenCount = parents.size();
-            double parentCount = children.size();
+        double childrenCount = scriptGui.parents().size();
+        double parentCount = scriptGui.children().size();
 
-            for (ScriptGui child : children) {
-                g.addEdge(script.id() + "Использует " + child.id(), script.id(), child.id(), EdgeType.DIRECTED);
-                edge_weight.put(script.id() + "Использует " + child.id(), (childrenCount + parentCount) != 0 ? ((Double) (childrenCount / (childrenCount + parentCount))) : 0);
-            }
+        for (ScriptGui child : scriptGui.children()) {
+            g.addEdge(scriptGui.id() + "Использует " + child.id(), scriptGui.id(), child.id(), EdgeType.DIRECTED);
+            edge_weight.put(scriptGui.id() + "Использует " + child.id(), (childrenCount + parentCount) != 0 ? ((Double) (childrenCount / (childrenCount + parentCount))) : 0);
+            sinks.add(child.id());
+        }
 
-            for (ScriptGui parent : parents) {
-                g.addEdge(parent.id() + "Использует " + script.id(), parent.id(), script.id(), EdgeType.DIRECTED);
-            }
+        for (ScriptGui parent : scriptGui.parents()) {
+            g.addEdge(parent.id() + "Использует " + scriptGui.id(), parent.id(), scriptGui.id(), EdgeType.DIRECTED);
+            seedVertices.add(parent.id());
+            sources.add(parent.id());
+        }
 
-            if (!script.children().isEmpty()) {
-                seedVertices.add(script.id());
-                sources.add(script.id());
-            } else if (!script.parents().isEmpty()) {
-                sinks.add(script.id());
-            }
+        if (!scriptGui.children().isEmpty()) {
+            seedVertices.add(scriptGui.id());
+            sources.add(scriptGui.id());
+        } else if (!scriptGui.parents().isEmpty()) {
+            sinks.add(scriptGui.id());
         }
 
         if (seedVertices.size() < 2)
@@ -235,7 +230,6 @@ public class GraphPanel extends JPanel implements ActionListener {
     protected void addBottomControls(final JPanel jp) {
         final JPanel control_panel = new JPanel();
         control_panel.setLayout(new BoxLayout(control_panel, BoxLayout.Y_AXIS));
-        jp.add(control_panel, BorderLayout.EAST);
 
         final Component slidePanel = createSliderPanel();
         JPanel panelSlide = new JPanel(new BorderLayout());
@@ -256,6 +250,8 @@ public class GraphPanel extends JPanel implements ActionListener {
         control_panel.add(panelEdge);
         control_panel.add(panelBoth);
         control_panel.add(Box.createVerticalGlue());
+
+        jp.add(new JScrollPane(control_panel), BorderLayout.EAST);
     }
 
     private Component createSliderPanel() {
@@ -278,7 +274,7 @@ public class GraphPanel extends JPanel implements ActionListener {
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                GraphPanel.this.graphLayout.setSize(new Dimension(slider.getValue(), slider.getValue()));
+                GraphDetailPanel.this.graphLayout.setSize(new Dimension(slider.getValue(), slider.getValue()));
                 vv.repaint();
             }
         });
@@ -455,26 +451,26 @@ public class GraphPanel extends JPanel implements ActionListener {
         both_panel.add(comboGrid);
 
         JComboBox cb = new JComboBox();
-        cb.addItem(Renderer.VertexLabel.Position.N);
-        cb.addItem(Renderer.VertexLabel.Position.NE);
-        cb.addItem(Renderer.VertexLabel.Position.E);
-        cb.addItem(Renderer.VertexLabel.Position.SE);
-        cb.addItem(Renderer.VertexLabel.Position.S);
-        cb.addItem(Renderer.VertexLabel.Position.SW);
-        cb.addItem(Renderer.VertexLabel.Position.W);
-        cb.addItem(Renderer.VertexLabel.Position.NW);
-        cb.addItem(Renderer.VertexLabel.Position.N);
-        cb.addItem(Renderer.VertexLabel.Position.CNTR);
-        cb.addItem(Renderer.VertexLabel.Position.AUTO);
+        cb.addItem(edu.uci.ics.jung.visualization.renderers.Renderer.VertexLabel.Position.N);
+        cb.addItem(edu.uci.ics.jung.visualization.renderers.Renderer.VertexLabel.Position.NE);
+        cb.addItem(edu.uci.ics.jung.visualization.renderers.Renderer.VertexLabel.Position.E);
+        cb.addItem(edu.uci.ics.jung.visualization.renderers.Renderer.VertexLabel.Position.SE);
+        cb.addItem(edu.uci.ics.jung.visualization.renderers.Renderer.VertexLabel.Position.S);
+        cb.addItem(edu.uci.ics.jung.visualization.renderers.Renderer.VertexLabel.Position.SW);
+        cb.addItem(edu.uci.ics.jung.visualization.renderers.Renderer.VertexLabel.Position.W);
+        cb.addItem(edu.uci.ics.jung.visualization.renderers.Renderer.VertexLabel.Position.NW);
+        cb.addItem(edu.uci.ics.jung.visualization.renderers.Renderer.VertexLabel.Position.N);
+        cb.addItem(edu.uci.ics.jung.visualization.renderers.Renderer.VertexLabel.Position.CNTR);
+        cb.addItem(edu.uci.ics.jung.visualization.renderers.Renderer.VertexLabel.Position.AUTO);
         cb.addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent e) {
-                Renderer.VertexLabel.Position position =
-                        (Renderer.VertexLabel.Position) e.getItem();
+                edu.uci.ics.jung.visualization.renderers.Renderer.VertexLabel.Position position =
+                        (edu.uci.ics.jung.visualization.renderers.Renderer.VertexLabel.Position) e.getItem();
                 vv.getRenderer().getVertexLabelRenderer().setPosition(position);
                 vv.repaint();
             }
         });
-        cb.setSelectedItem(Renderer.VertexLabel.Position.SE);
+        cb.setSelectedItem(edu.uci.ics.jung.visualization.renderers.Renderer.VertexLabel.Position.SE);
         JPanel positionPanel = new JPanel(new BorderLayout());
         positionPanel.setBorder(BorderFactory.createTitledBorder("Расположение названия"));
         positionPanel.add(cb, BorderLayout.CENTER);
@@ -846,15 +842,8 @@ public class GraphPanel extends JPanel implements ActionListener {
                         return new Color(1f, 0, 0, alpha);
                 }
             } else {
-                if (v.equals(selected.getSelected())) {
-                    return Color.BLUE;
-                } else {
-                    return Color.RED;
-                }
-
+                return Color.RED;
             }
-
-
         }
     }
 

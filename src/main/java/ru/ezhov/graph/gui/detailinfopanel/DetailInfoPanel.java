@@ -2,8 +2,9 @@ package ru.ezhov.graph.gui.detailinfopanel;
 
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import ru.ezhov.graph.gui.components.SyntaxTextAreaWithSearchPanel;
-import ru.ezhov.graph.gui.domain.ScriptView;
-import ru.ezhov.graph.gui.domain.ScriptViewDetail;
+import ru.ezhov.graph.gui.components.TabHeader;
+import ru.ezhov.graph.gui.domain.ScriptGui;
+import ru.ezhov.graph.gui.graphdetailpanel.GraphDetailPanel;
 import ru.ezhov.graph.util.PercentScreenDimension;
 
 import javax.swing.*;
@@ -15,10 +16,10 @@ import java.util.logging.Logger;
 /**
  * Created by ezhov_da on 20.04.2018.
  */
-public class GraphDetailPanel extends JPanel {
-    private static final Logger LOG = Logger.getLogger(GraphDetailPanel.class.getName());
+public class DetailInfoPanel extends JPanel {
+    private static final Logger LOG = Logger.getLogger(DetailInfoPanel.class.getName());
 
-    private ScriptViewDetail scriptViewDetail;
+    private ScriptGui scriptGui;
     private JLabel labelId;
     private JButton buttonClose;
     private JTextField textFieldId;
@@ -26,12 +27,13 @@ public class GraphDetailPanel extends JPanel {
     private JList listUse;
     private JLabel labelUseIn;
     private JList listUseIn;
-    private JLabel labelText;
     private SyntaxTextAreaWithSearchPanel syntaxTextAreaWithSearchPanel;
 
+    private JTabbedPane tabbedPane;
 
-    public GraphDetailPanel(ScriptViewDetail scriptViewDetail) {
-        this.scriptViewDetail = scriptViewDetail;
+
+    public DetailInfoPanel(ScriptGui scriptGui) {
+        this.scriptGui = scriptGui;
         init();
     }
 
@@ -40,14 +42,14 @@ public class GraphDetailPanel extends JPanel {
         labelId = new JLabel("ID");
         buttonClose = new JButton("Закрыть");
         textFieldId = new JTextField();
-        textFieldId.setText(scriptViewDetail.id());
+        textFieldId.setText(scriptGui.id());
         labelUseIn = new JLabel("Используется в:");
-        listUseIn = new JList(new DetailPanelListModel(scriptViewDetail.parents()));
+        listUseIn = new JList(new DetailPanelListModel(scriptGui.parents()));
         listUseIn.setCellRenderer(new DetailPanelListRender());
         labelUse = new JLabel("Использует:");
-        listUse = new JList(new DetailPanelListModel(scriptViewDetail.children()));
+        listUse = new JList(new DetailPanelListModel(scriptGui.children()));
         listUse.setCellRenderer(new DetailPanelListRender());
-        labelText = new JLabel("Текст");
+        tabbedPane = new JTabbedPane();
 
         syntaxTextAreaWithSearchPanel = new SyntaxTextAreaWithSearchPanel(SyntaxConstants.SYNTAX_STYLE_JAVASCRIPT);
 
@@ -56,7 +58,7 @@ public class GraphDetailPanel extends JPanel {
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) {
                     JList list = (JList) e.getSource();
-                    ScriptView view = (ScriptView) list.getSelectedValue();
+                    ScriptGui view = (ScriptGui) list.getSelectedValue();
                     JDialog dialog = new JDialog();
                     dialog.setTitle("Просмотр краткой информации о скрипте");
                     dialog.setIconImage(new ImageIcon(this.getClass().getResource("/graph_16x16.png")).getImage());
@@ -82,16 +84,16 @@ public class GraphDetailPanel extends JPanel {
 
         JPanel panelUseCommon = new JPanel();
 
-        if (!scriptViewDetail.parents().isEmpty() & !scriptViewDetail.children().isEmpty()) {
+        if (!scriptGui.parents().isEmpty() & !scriptGui.children().isEmpty()) {
             panelUseCommon.setLayout(new GridLayout(1, 2));
             panelUseCommon.add(panelUseIn);
             panelUseCommon.add(panelUse);
             panelTopGroup.add(panelUseCommon, BorderLayout.CENTER);
-        } else if (scriptViewDetail.parents().isEmpty() & !scriptViewDetail.children().isEmpty()) {
+        } else if (scriptGui.parents().isEmpty() & !scriptGui.children().isEmpty()) {
             panelUseCommon.setLayout(new GridLayout(1, 1));
             panelUseCommon.add(panelUse);
             panelTopGroup.add(panelUseCommon, BorderLayout.CENTER);
-        } else if (!scriptViewDetail.parents().isEmpty() & scriptViewDetail.children().isEmpty()) {
+        } else if (!scriptGui.parents().isEmpty() & scriptGui.children().isEmpty()) {
             panelUseCommon.setLayout(new GridLayout(1, 1));
             panelUseCommon.add(panelUseIn);
             panelTopGroup.add(panelUseCommon, BorderLayout.CENTER);
@@ -101,7 +103,18 @@ public class GraphDetailPanel extends JPanel {
 
         JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
         splitPane.setTopComponent(panelTopGroup);
-        splitPane.setBottomComponent(panelText);
+
+        if (scriptGui.parents().isEmpty() && scriptGui.children().isEmpty()) {
+            //NOT ADD
+        } else {
+            tabbedPane.addTab("ГРАФ", new GraphDetailPanel(scriptGui));
+            tabbedPane.setTabComponentAt(0, new TabHeader("ГРАФ", tabbedPane));
+        }
+        tabbedPane.addTab("Текст", panelText);
+        tabbedPane.setTabComponentAt(tabbedPane.getTabCount() - 1, new TabHeader("Текст", tabbedPane));
+
+
+        splitPane.setBottomComponent(tabbedPane);
         splitPane.setResizeWeight(0.3);
         splitPane.setDividerLocation(0.3);
 
@@ -131,10 +144,8 @@ public class GraphDetailPanel extends JPanel {
 
     private JPanel panelText() {
         JPanel panel = new JPanel(new BorderLayout());
-        panel.add(labelText, BorderLayout.NORTH);
-        labelText.setHorizontalAlignment(SwingConstants.CENTER);
         try {
-            syntaxTextAreaWithSearchPanel.text(scriptViewDetail.text());
+            syntaxTextAreaWithSearchPanel.text(scriptGui.text());
         } catch (Exception e) {
             e.printStackTrace();
             syntaxTextAreaWithSearchPanel.text("Не удалось получить текст скрипта");

@@ -1,7 +1,8 @@
 package ru.ezhov.graph.gui.commonapppanel;
 
-import ru.ezhov.graph.gui.tabbedpanel.CommonPanel;
 import ru.ezhov.graph.gui.components.JTextFieldWithText;
+import ru.ezhov.graph.gui.tabbedpanel.CommonPanel;
+import ru.ezhov.graph.gui.util.ScriptsToScriptsGui;
 import ru.ezhov.graph.script.Scripts;
 import ru.ezhov.graph.script.ScriptsFactory;
 import ru.ezhov.graph.storage.FilePathStore;
@@ -123,7 +124,7 @@ public class BasicPanel extends JPanel {
                     @Override
                     public void run() {
                         BasicPanel.this.remove(panelCenter);
-                        panelCenter = new CommonPanel(scripts);
+                        panelCenter = new CommonPanel(new ScriptsToScriptsGui(scripts).convert());
                         BasicPanel.this.add(panelCenter, BorderLayout.CENTER);
                         BasicPanel.this.revalidate();
                     }

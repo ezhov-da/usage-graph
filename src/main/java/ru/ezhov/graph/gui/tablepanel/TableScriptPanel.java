@@ -1,8 +1,8 @@
 package ru.ezhov.graph.gui.tablepanel;
 
-import ru.ezhov.graph.script.Script;
-import ru.ezhov.graph.script.Scripts;
 import ru.ezhov.graph.gui.components.JTextFieldWithText;
+import ru.ezhov.graph.gui.domain.ScriptGui;
+import ru.ezhov.graph.gui.domain.ScriptsGui;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
@@ -17,14 +17,14 @@ import java.util.List;
 public class TableScriptPanel extends JPanel {
 
     private JTable table;
-    private Scripts scripts;
+    private ScriptsGui scripts;
     private SearchPanel searchPanel;
 
     private List<TableScriptEvent> scriptEventList;
 
     private TableScriptModel tableScriptModel;
 
-    public TableScriptPanel(final Scripts scripts, TableScriptEvent... tableScriptEvents) {
+    public TableScriptPanel(final ScriptsGui scripts, TableScriptEvent... tableScriptEvents) {
         this.scripts = scripts;
 
         scriptEventList = Arrays.asList(tableScriptEvents);
@@ -76,7 +76,7 @@ public class TableScriptPanel extends JPanel {
                 int selectedRow = table.getSelectedRow();
                 if (selectedRow != -1) {
                     int row = table.convertRowIndexToModel(selectedRow);
-                    Script script = scripts.all().get(row);
+                    ScriptGui script = scripts.all().get(row);
                     fireEventListener(EventType.MOUSE_RELEASED, e, script);
                 }
             }
@@ -86,7 +86,7 @@ public class TableScriptPanel extends JPanel {
                 int selectedRow = table.getSelectedRow();
                 if (selectedRow != -1) {
                     int row = table.convertRowIndexToModel(selectedRow);
-                    Script script = scripts.all().get(row);
+                    ScriptGui script = scripts.all().get(row);
                     fireEventListener(EventType.MOUSE_CLICKED, e, script);
                 }
             }
@@ -94,7 +94,7 @@ public class TableScriptPanel extends JPanel {
         });
     }
 
-    private void fireEventListener(EventType eventType, Object e, Script script) {
+    private void fireEventListener(EventType eventType, Object e, ScriptGui script) {
         for (TableScriptEvent tableScriptEvent : scriptEventList) {
             tableScriptEvent.event(eventType, e, script);
         }
@@ -159,10 +159,10 @@ public class TableScriptPanel extends JPanel {
 
     private class TableScriptModel extends AbstractTableModel {
 
-        private Scripts scripts;
+        private ScriptsGui scripts;
         private String[] columns = {"ID", "Используется в", "Использует", "Кол-во строк", "Устойчивость к изменениям"};
 
-        public TableScriptModel(Scripts scripts) {
+        public TableScriptModel(ScriptsGui scripts) {
             this.scripts = scripts;
         }
 
@@ -183,21 +183,19 @@ public class TableScriptPanel extends JPanel {
 
         @Override
         public Object getValueAt(int rowIndex, int columnIndex) {
-            Script script = scripts.all().get(rowIndex);
+            ScriptGui script = scripts.all().get(rowIndex);
 
             switch (columnIndex) {
                 case 0:
                     return script.id();
                 case 1:
-                    return scripts.parents(script.id()).size();
+                    return script.parents().size();
                 case 2:
-                    return scripts.children(script.id()).size();
+                    return script.children().size();
                 case 3:
                     return script.rows();
                 case 4:
-                    double childrenCount = scripts.children(script.id()).size();
-                    double parentCount = scripts.parents(script.id()).size();
-                    return (childrenCount + parentCount) != 0 ? childrenCount / (childrenCount + parentCount) : 0;
+                    return script.stability();
                 default:
                     throw new UnsupportedOperationException("Неподдерживаемое кол-во столбцов");
 
