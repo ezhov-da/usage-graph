@@ -1,4 +1,4 @@
-package ru.ezhov.graph.gui;
+package ru.ezhov.graph.gui.domain;
 
 import ru.ezhov.graph.script.Script;
 

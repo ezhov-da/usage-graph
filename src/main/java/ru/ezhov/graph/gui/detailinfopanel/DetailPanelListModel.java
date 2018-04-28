@@ -1,4 +1,6 @@
-package ru.ezhov.graph.gui;
+package ru.ezhov.graph.gui.detailinfopanel;
+
+import ru.ezhov.graph.gui.domain.ScriptView;
 
 import javax.swing.*;
 import java.util.Set;

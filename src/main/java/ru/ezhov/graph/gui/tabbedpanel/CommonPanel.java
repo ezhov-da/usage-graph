@@ -1,5 +1,11 @@
-package ru.ezhov.graph.gui;
+package ru.ezhov.graph.gui.tabbedpanel;
 
+import ru.ezhov.graph.gui.*;
+import ru.ezhov.graph.gui.detailinfopanel.GraphDetailPanel;
+import ru.ezhov.graph.gui.domain.DefaultScriptView;
+import ru.ezhov.graph.gui.domain.ScriptView;
+import ru.ezhov.graph.gui.domain.ScriptViewDetail;
+import ru.ezhov.graph.gui.graphpanel.GraphPanel;
 import ru.ezhov.graph.script.Script;
 import ru.ezhov.graph.script.Scripts;
 import ru.ezhov.graph.util.PercentScreenDimension;

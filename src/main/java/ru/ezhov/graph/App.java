@@ -2,7 +2,7 @@ package ru.ezhov.graph;
 
 
 import ru.ezhov.graph.util.PercentScreenDimension;
-import ru.ezhov.graph.gui.BasicPanel;
+import ru.ezhov.graph.gui.commonapppanel.BasicPanel;
 
 import javax.swing.*;
 import java.util.logging.Logger;

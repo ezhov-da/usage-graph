@@ -1,4 +1,4 @@
-package ru.ezhov.graph.gui;
+package ru.ezhov.graph.gui.domain;
 
 public interface ScriptView {
     String id();

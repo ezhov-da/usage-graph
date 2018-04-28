@@ -1,4 +1,4 @@
-package ru.ezhov.graph.gui;
+package ru.ezhov.graph.gui.graphpanel;
 
 import edu.uci.ics.jung.algorithms.layout.FRLayout;
 import edu.uci.ics.jung.algorithms.layout.GraphElementAccessor;
@@ -27,6 +27,9 @@ import org.apache.commons.collections15.Predicate;
 import org.apache.commons.collections15.Transformer;
 import org.apache.commons.collections15.functors.ConstantTransformer;
 import org.apache.commons.collections15.functors.MapTransformer;
+import ru.ezhov.graph.gui.domain.DefaultScriptView;
+import ru.ezhov.graph.gui.domain.ScriptView;
+import ru.ezhov.graph.gui.Selected;
 import ru.ezhov.graph.script.Script;
 import ru.ezhov.graph.script.Scripts;
 
@@ -37,94 +40,6 @@ import java.awt.geom.Point2D;
 import java.util.*;
 import java.util.List;
 
-
-/**
- * Shows off some of the capabilities of <code>PluggableRenderer</code>.
- * This code provides examples of different ways to provide and
- * change the various functions that provide property information
- * to the renderer.
- * <p>
- * <p>This demo creates a random mixed-mode graph with random edge
- * weights using <code>TestGraph.generateMixedRandomGraph</code>.
- * It then runs <code>VoltageRanker</code> on this graph, using half
- * of the "seed" vertices from the random graph generation as
- * voltage sources, and half of them as voltage sinks.</p>
- * <p>
- * <p>What the controls do:
- * <ul>
- * <li/>Mouse controls:
- * <ul>
- * <li/>If your mouse has a scroll wheel, scrolling forward zooms out and
- * scrolling backward zooms in.
- * <li/>Left-clicking on a vertex or edge selects it, and unselects all others.
- * <li/>Middle-clicking on a vertex or edge toggles its selection state.
- * <li/>Right-clicking on a vertex brings up a pop-up menu that allows you to
- * increase or decrease that vertex's transparency.
- * <li/>Left-clicking on the background allows you to drag the image around.
- * <li/>Hovering over a vertex tells you what its voltage is; hovering over an
- * edge shows its identity; hovering over the background shows an informational
- * message.
- * </ul>
- * <li/>Vertex stuff:
- * <ul>
- * <li/>"vertex seed coloring": if checked, the seed vertices are colored blue,
- * and all other vertices are colored red.  Otherwise, all vertices are colored
- * a slightly transparent red (except the currently "picked" vertex, which is
- * colored transparent purple).
- * <li/>"vertex selection stroke highlighting": if checked, the picked vertex
- * and its neighbors are all drawn with heavy borders.  Otherwise, all vertices
- * are drawn with light borders.
- * <li/>"show vertex ranks (voltages)": if checked, each vertex is labeled with its
- * calculated 'voltage'.  Otherwise, vertices are unlabeled.
- * <li/>"vertex degree shapes": if checked, vertices are drawn with a polygon with
- * number of sides proportional to its degree.  Otherwise, vertices are drawn
- * as ellipses.
- * <li/>"vertex voltage size": if checked, vertices are drawn with a size
- * proportional to their voltage ranking.  Otherwise, all vertices are drawn
- * at the same size.
- * <li/>"vertex degree ratio stretch": if checked, vertices are drawn with an
- * aspect ratio (height/width ratio) proportional to the ratio of their indegree to
- * their outdegree.  Otherwise, vertices are drawn with an aspect ratio of 1.
- * <li/>"filter vertices of degree &lt; 4": if checked, does not display any vertices
- * (or their incident edges) whose degree in the original graph is less than 4;
- * otherwise, all vertices are drawn.
- * </ul>
- * <li/>Edge stuff:
- * <ul>
- * <li/>"edge shape": selects between lines, wedges, quadratic curves, and cubic curves
- * for drawing edges.
- * <li/>"fill edge shapes": if checked, fills the edge shapes.  This will have no effect
- * if "line" is selected.
- * <li/>"edge paint": selects between solid colored edges, and gradient-painted edges.
- * Gradient painted edges are darkest in the middle for undirected edges, and darkest
- * at the destination for directed edges.
- * <li/>"show edges": only edges of the checked types are drawn.
- * <li/>"show arrows": only arrows whose edges are of the checked types are drawn.
- * <li/>"edge weight highlighting": if checked, edges with weight greater than
- * a threshold value are drawn using thick solid lines, and other edges are drawn
- * using thin gray dotted lines.  (This combines edge stroke and paint.) Otherwise,
- * all edges are drawn with thin solid lines.
- * <li/>"show edge weights": if checked, edges are labeled with their weights.
- * Otherwise, edges are not labeled.
- * </ul>
- * <li/>Miscellaneous (center panel)
- * <ul>
- * <li/>"bold text": if checked, all vertex and edge labels are drawn using a
- * boldface font.  Otherwise, a normal-weight font is used.  (Has no effect if
- * no labels are currently visible.)
- * <li/>zoom controls:
- * <ul>
- * <li/>"+" zooms in, "-" zooms out
- * <li/>"zoom at mouse (wheel only)": if checked, zooming (using the mouse
- * scroll wheel) is centered on the location of the mouse pointer; otherwise,
- * it is centered on the center of the visualization pane.
- * </ul>
- * </ul>
- * </p>
- *
- * @author Danyel Fisher, Joshua O'Madadhain, Tom Nelson
- */
-@SuppressWarnings("serial")
 public class GraphPanel extends JPanel implements ActionListener {
 
     private static final int GRADIENT_NONE = 0;

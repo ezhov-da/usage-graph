@@ -1,5 +1,6 @@
-package ru.ezhov.graph.gui;
+package ru.ezhov.graph.gui.commonapppanel;
 
+import ru.ezhov.graph.gui.tabbedpanel.CommonPanel;
 import ru.ezhov.graph.gui.components.JTextFieldWithText;
 import ru.ezhov.graph.script.Scripts;
 import ru.ezhov.graph.script.ScriptsFactory;

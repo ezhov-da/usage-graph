@@ -1,7 +1,8 @@
-package ru.ezhov.graph.gui;
+package ru.ezhov.graph.gui.detailinfopanel;
 
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import ru.ezhov.graph.gui.components.SyntaxTextAreaWithSearchPanel;
+import ru.ezhov.graph.gui.domain.ScriptView;
 
 import javax.swing.*;
 import java.awt.*;
