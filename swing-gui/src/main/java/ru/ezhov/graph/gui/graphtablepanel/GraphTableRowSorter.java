@@ -24,9 +24,9 @@ public class GraphTableRowSorter extends TableRowSorter<TableModel> {
                         case 0:
                             return graphObjectGui.id();
                         case 1:
-                            return numberForEquals(graphObjectGui.parents() + "");
+                            return numberForEquals(graphObjectGui.parents().size() + "");
                         case 2:
-                            return numberForEquals(graphObjectGui.children() + "");
+                            return numberForEquals(graphObjectGui.children().size() + "");
                         case 3:
                             return numberForEquals(graphObjectGui.rows() + "");
                         case 4:
