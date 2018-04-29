@@ -9,11 +9,9 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>swing-gui-plugin</artifactId>
+    <artifactId>swing-gui-source-analyse-plugin</artifactId>
 
-    <name>swing-gui-plugin</name>
-    <!-- FIXME change it to the project's website -->
-    <url>http://www.example.com</url>
+    <name>swing-gui-source-analyse-plugin</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -30,7 +28,7 @@
         </dependency>
         <dependency>
             <groupId>ru.ezhov</groupId>
-            <artifactId>analyse-object</artifactId>
+            <artifactId>analyse-object-interface</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>

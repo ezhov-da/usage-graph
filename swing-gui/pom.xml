@@ -222,7 +222,12 @@
         </dependency>
         <dependency>
             <groupId>ru.ezhov</groupId>
-            <artifactId>analyse-object</artifactId>
+            <artifactId>analyse-object-interface</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>ru.ezhov</groupId>
+            <artifactId>swing-gui-source-analyse-plugin</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>

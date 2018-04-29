@@ -12,11 +12,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class ScriptsToScriptsGui {
+public class AnalyseObjectToGraphObjectGui {
     private AnalyzedObjects analyzedObjects;
     private List<GraphObjectGui> graphObjectGuis;
 
-    public ScriptsToScriptsGui(AnalyzedObjects analyzedObjects) {
+    public AnalyseObjectToGraphObjectGui(AnalyzedObjects analyzedObjects) {
         this.analyzedObjects = analyzedObjects;
     }
 

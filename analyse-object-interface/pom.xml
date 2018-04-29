@@ -9,9 +9,9 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>analyse-object</artifactId>
+    <artifactId>analyse-object-interface</artifactId>
 
-    <name>analyse-object</name>
+    <name>analyse-object-interface</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

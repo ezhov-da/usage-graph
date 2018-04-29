@@ -28,7 +28,7 @@
         </dependency>
         <dependency>
             <groupId>ru.ezhov</groupId>
-            <artifactId>swing-gui-plugin</artifactId>
+            <artifactId>swing-gui-source-analyse-plugin</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>

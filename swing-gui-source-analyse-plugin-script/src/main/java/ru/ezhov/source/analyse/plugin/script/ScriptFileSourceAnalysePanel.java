@@ -39,7 +39,6 @@ public class ScriptFileSourceAnalysePanel extends AbstractSourceAnalysePanel {
 
         comboBoxLastUser = new JComboBox<>();
 
-
         buttonOpenDir.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

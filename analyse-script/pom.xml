@@ -28,7 +28,7 @@
         </dependency>
         <dependency>
             <groupId>ru.ezhov</groupId>
-            <artifactId>analyse-object</artifactId>
+            <artifactId>analyse-object-interface</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
 

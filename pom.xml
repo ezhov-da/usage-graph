@@ -9,11 +9,11 @@
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
     <modules>
-        <module>analyse-object</module>
+        <module>analyse-object-interface</module>
         <module>analyse-script</module>
         <module>swing-gui-source-analyse-plugin</module>
-        <module>swing-gui</module>
         <module>swing-gui-source-analyse-plugin-script</module>
+        <module>swing-gui</module>
     </modules>
 
     <name>usage-ru.ezhov.graph</name>

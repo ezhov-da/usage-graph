@@ -3,6 +3,7 @@ package ru.ezhov.graph;
 
 import ru.ezhov.graph.gui.commonapppanel.BasicPanel;
 import ru.ezhov.graph.util.PercentScreenDimension;
+import ru.ezhov.source.analyse.plugin.AbstractSourceAnalysePanel;
 
 import javax.swing.*;
 import java.util.logging.Logger;
@@ -21,14 +22,17 @@ public class App {
         }
 
         try {
+            Class aClass = Class.forName("ru.ezhov.source.analyse.plugin.script.ScriptFileSourceAnalysePanel");
+
+            final AbstractSourceAnalysePanel abstractSourceAnalysePanel = (AbstractSourceAnalysePanel) aClass.newInstance();
+
             SwingUtilities.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    JFrame frame = new JFrame("Граф использование");
+                    JFrame frame = new JFrame("Граф использования");
                     frame.setIconImage(new ImageIcon(this.getClass().getResource("/graph_16x16.png")).getImage());
                     frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-//					frame.getContentPane().add(new CommonPanel(scripts));
-                    frame.getContentPane().add(new BasicPanel());
+                    frame.getContentPane().add(new BasicPanel(abstractSourceAnalysePanel));
                     frame.setSize(new PercentScreenDimension(90).dimension());
                     frame.setLocationRelativeTo(null);
                     frame.setVisible(true);
