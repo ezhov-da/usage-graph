@@ -26,7 +26,7 @@ public class FlyFrame {
             public void windowClosing(WindowEvent e) {
                 frame.remove(component);
                 tabbedPane.addTab(text, component);
-                tabbedPane.setTabComponentAt(tabbedPane.getTabCount() - 1, new TabHeader(text, tabbedPane));
+                tabbedPane.setTabComponentAt(tabbedPane.getTabCount() - 1, new TabHeader(text, tabbedPane, false));
                 tabbedPane.setSelectedIndex(tabbedPane.getTabCount() - 1);
             }
         });

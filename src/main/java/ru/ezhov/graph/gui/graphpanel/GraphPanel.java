@@ -27,9 +27,11 @@ import org.apache.commons.collections15.Predicate;
 import org.apache.commons.collections15.Transformer;
 import org.apache.commons.collections15.functors.ConstantTransformer;
 import org.apache.commons.collections15.functors.MapTransformer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.ezhov.graph.gui.Selected;
-import ru.ezhov.graph.gui.domain.ScriptGui;
-import ru.ezhov.graph.gui.domain.ScriptsGui;
+import ru.ezhov.graph.gui.domain.GraphObjectGui;
+import ru.ezhov.graph.gui.domain.GraphObjectsGui;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -42,10 +44,12 @@ import java.util.List;
 
 public class GraphPanel extends JPanel implements ActionListener {
 
+    private static final Logger LOG = LoggerFactory.getLogger(GraphPanel.class);
+
     private static final int GRADIENT_NONE = 0;
     private static final int GRADIENT_RELATIVE = 1;
     private static int gradient_level = GRADIENT_NONE;
-    private ScriptsGui scripts;
+    private GraphObjectsGui scripts;
     private Selected selected;
     private JCheckBox v_color;
     private JCheckBox e_color;
@@ -99,7 +103,7 @@ public class GraphPanel extends JPanel implements ActionListener {
     private Set<String> seedVertices = new HashSet<String>();
 
 
-    public GraphPanel(ScriptsGui scripts, Selected selected) {
+    public GraphPanel(GraphObjectsGui scripts, Selected selected) {
         setLayout(new BorderLayout());
         this.scripts = scripts;
         this.selected = selected;
@@ -185,20 +189,20 @@ public class GraphPanel extends JPanel implements ActionListener {
         Set<String> sources = new HashSet<String>();
         Set<String> sinks = new HashSet<String>();
 
-        List<ScriptGui> scriptsGuis = scripts.all();
-        for (ScriptGui script : scriptsGuis) {
+        List<GraphObjectGui> scriptsGuis = scripts.all();
+        for (GraphObjectGui script : scriptsGuis) {
             String id = script.id();
-            Set<ScriptGui> parents = script.parents();
-            Set<ScriptGui> children = script.children();
+            Set<GraphObjectGui> parents = script.parents();
+            Set<GraphObjectGui> children = script.children();
             double childrenCount = parents.size();
             double parentCount = children.size();
 
-            for (ScriptGui child : children) {
+            for (GraphObjectGui child : children) {
                 g.addEdge(script.id() + "Использует " + child.id(), script.id(), child.id(), EdgeType.DIRECTED);
                 edge_weight.put(script.id() + "Использует " + child.id(), (childrenCount + parentCount) != 0 ? ((Double) (childrenCount / (childrenCount + parentCount))) : 0);
             }
 
-            for (ScriptGui parent : parents) {
+            for (GraphObjectGui parent : parents) {
                 g.addEdge(parent.id() + "Использует " + script.id(), parent.id(), script.id(), EdgeType.DIRECTED);
             }
 
@@ -210,8 +214,9 @@ public class GraphPanel extends JPanel implements ActionListener {
             }
         }
 
-        if (seedVertices.size() < 2)
-            System.out.println("need at least 2 seeds (one source, one sink)");
+        if (seedVertices.size() < 2) {
+            LOG.error("need at least 2 seeds (one source, one sink)");
+        }
 
         VoltageScorer<String, String> voltage_scores =
                 new VoltageScorer<String, String>(g, MapTransformer.getInstance(edge_weight), sources, sinks);

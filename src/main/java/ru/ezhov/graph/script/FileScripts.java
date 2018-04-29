@@ -1,11 +1,17 @@
 package ru.ezhov.graph.script;
 
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 class FileScripts implements Scripts {
+
+    private static final Logger LOG = LoggerFactory.getLogger(FileScripts.class);
 
     private File root;
     private Map<String, Script> scripts = new HashMap<>();
@@ -18,8 +24,8 @@ class FileScripts implements Scripts {
         long start = System.currentTimeMillis();
         initialScripts(root);
         initParentAndChildren();
-        System.out.println("SUCCESS SCRIPT ANALYSE: " + (System.currentTimeMillis() - start) + " ms COUNT SCRIPTS: " +
-                scripts.size());
+
+        LOG.info("SUCCESS SCRIPT ANALYSE: {} ms SCRIPTS COUNT: {}", System.currentTimeMillis() - start, scripts.size());
     }
 
     private void initialScripts(File file) {
@@ -30,7 +36,7 @@ class FileScripts implements Scripts {
             }
         } else {
             String path = file.getAbsolutePath();
-            System.out.println("> " + path);
+            LOG.debug("Find file: {}", path);
             path = path.replace('\\', '/');
             int index = path.indexOf("scripts");
             try {
@@ -68,7 +74,7 @@ class FileScripts implements Scripts {
     private void initParentAndChildren() throws Exception {
         Set<Map.Entry<String, Script>> entries = scripts.entrySet();
         for (Map.Entry<String, Script> entry : entries) {
-            System.out.println(">>> " + entry.getKey());
+            LOG.debug("Use ID: {}", entry.getKey());
             for (Map.Entry<String, Script> entryInner : entries) {
                 //не используем самого себя
                 if (entry.getKey().equals(entryInner.getKey())) {

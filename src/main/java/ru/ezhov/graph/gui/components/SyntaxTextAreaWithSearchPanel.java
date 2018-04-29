@@ -30,7 +30,7 @@ public class SyntaxTextAreaWithSearchPanel extends JPanel implements ActionListe
         toolBar.setFloatable(false);
         searchField = new JTextField(30);
         toolBar.add(searchField);
-        final JButton nextButton = new JButton("Find Next");
+        final JButton nextButton = new JButton("Следующее совпадение");
         nextButton.setActionCommand("FindNext");
         nextButton.addActionListener(this);
         toolBar.add(nextButton);
@@ -39,13 +39,13 @@ public class SyntaxTextAreaWithSearchPanel extends JPanel implements ActionListe
                 nextButton.doClick(0);
             }
         });
-        JButton prevButton = new JButton("Find Previous");
+        JButton prevButton = new JButton("Предыдущее совпадение");
         prevButton.setActionCommand("FindPrev");
         prevButton.addActionListener(this);
         toolBar.add(prevButton);
-        regexCB = new JCheckBox("Regex");
+        regexCB = new JCheckBox("Регулярное выражение");
         toolBar.add(regexCB);
-        matchCaseCB = new JCheckBox("Match Case");
+        matchCaseCB = new JCheckBox("Регистрозависимость");
         toolBar.add(matchCaseCB);
         cp.add(toolBar, BorderLayout.NORTH);
 
@@ -77,7 +77,7 @@ public class SyntaxTextAreaWithSearchPanel extends JPanel implements ActionListe
 
         boolean found = SearchEngine.find(textArea, context).wasFound();
         if (!found) {
-            labelInfo.setText("Совпадение не найдено");
+            labelInfo.setText("<html><font color=\"red\">Совпадение не найдено</font>");
         } else {
             labelInfo.setText("");
         }

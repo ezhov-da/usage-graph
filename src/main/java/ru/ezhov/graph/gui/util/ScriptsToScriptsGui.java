@@ -1,10 +1,12 @@
 package ru.ezhov.graph.gui.util;
 
-import ru.ezhov.graph.gui.domain.ScriptGui;
-import ru.ezhov.graph.gui.domain.ScriptsGui;
+import ru.ezhov.graph.gui.domain.GraphObjectGui;
+import ru.ezhov.graph.gui.domain.GraphObjectsGui;
 import ru.ezhov.graph.script.Script;
 import ru.ezhov.graph.script.Scripts;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -12,42 +14,42 @@ import java.util.Set;
 
 public class ScriptsToScriptsGui {
     private Scripts scripts;
-    private List<ScriptGui> scriptGuis;
+    private List<GraphObjectGui> graphObjectGuis;
 
     public ScriptsToScriptsGui(Scripts scripts) {
         this.scripts = scripts;
     }
 
-    public ScriptsGui convert() {
-        return new DefaultScriptsGui(scripts);
+    public GraphObjectsGui convert() {
+        return new DefaultGraphObjectsGui(scripts);
     }
 
-    private class DefaultScriptsGui implements ScriptsGui {
+    private class DefaultGraphObjectsGui implements GraphObjectsGui {
         private Scripts scripts;
 
-        public DefaultScriptsGui(Scripts scripts) {
+        public DefaultGraphObjectsGui(Scripts scripts) {
             this.scripts = scripts;
         }
 
         @Override
-        public List<ScriptGui> all() {
+        public List<GraphObjectGui> all() {
             //кешируем список
-            if (scriptGuis == null) {
-                scriptGuis = new ArrayList<>();
+            if (graphObjectGuis == null) {
+                graphObjectGuis = new ArrayList<>();
                 for (Script script : scripts.all()) {
-                    scriptGuis.add(new DefaultScript(script.id()));
+                    graphObjectGuis.add(new DefaultGraphObject(script.id()));
                 }
             }
-            return scriptGuis;
+            return graphObjectGuis;
         }
 
-        private class DefaultScript implements ScriptGui {
+        private class DefaultGraphObject implements GraphObjectGui {
 
             private String id;
-            private Set<ScriptGui> parents;
-            private Set<ScriptGui> children;
+            private Set<GraphObjectGui> parents;
+            private Set<GraphObjectGui> children;
 
-            public DefaultScript(String id) {
+            public DefaultGraphObject(String id) {
                 this.id = id;
             }
 
@@ -65,7 +67,10 @@ public class ScriptsToScriptsGui {
             public double stability() {
                 double childrenCount = scripts.children(id).size();
                 double parentCount = scripts.parents(id).size();
-                return (childrenCount + parentCount) != 0 ? childrenCount / (childrenCount + parentCount) : 0;
+
+                return new BigDecimal(
+                        (childrenCount + parentCount) != 0 ? childrenCount / (childrenCount + parentCount) : 0
+                ).round(new MathContext(2)).doubleValue();
             }
 
             @Override
@@ -74,7 +79,7 @@ public class ScriptsToScriptsGui {
             }
 
             @Override
-            public Set<ScriptGui> parents() {
+            public Set<GraphObjectGui> parents() {
                 //кешируем полученный список
                 if (parents == null) {
                     parents = convert(scripts.parents(id));
@@ -83,7 +88,7 @@ public class ScriptsToScriptsGui {
             }
 
             @Override
-            public Set<ScriptGui> children() {
+            public Set<GraphObjectGui> children() {
                 //кешируем полученный список
                 if (children == null) {
                     children = convert(scripts.children(id));
@@ -91,12 +96,12 @@ public class ScriptsToScriptsGui {
                 return children;
             }
 
-            private Set<ScriptGui> convert(List<Script> scripts) {
-                Set<ScriptGui> scriptGuis = new HashSet<>();
+            private Set<GraphObjectGui> convert(List<Script> scripts) {
+                Set<GraphObjectGui> graphObjectGuis = new HashSet<>();
                 for (Script script : scripts) {
-                    scriptGuis.add(new DefaultScript(script.id()));
+                    graphObjectGuis.add(new DefaultGraphObject(script.id()));
                 }
-                return scriptGuis;
+                return graphObjectGuis;
             }
         }
     }

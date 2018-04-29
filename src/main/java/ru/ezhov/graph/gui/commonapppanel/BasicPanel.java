@@ -1,5 +1,7 @@
 package ru.ezhov.graph.gui.commonapppanel;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.ezhov.graph.gui.components.JTextFieldWithText;
 import ru.ezhov.graph.gui.tabbedpanel.CommonPanel;
 import ru.ezhov.graph.gui.util.ScriptsToScriptsGui;
@@ -18,13 +20,12 @@ import java.awt.event.ItemListener;
 import java.io.File;
 import java.io.Serializable;
 import java.util.Collections;
-import java.util.logging.Logger;
 
 /**
  * Created by ezhov_da on 25.04.2018.
  */
 public class BasicPanel extends JPanel {
-    private static final Logger LOG = Logger.getLogger(BasicPanel.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(BasicPanel.class);
 
     private JButton buttonLoad;
 
@@ -130,7 +131,7 @@ public class BasicPanel extends JPanel {
                     }
                 });
             } catch (Exception e1) {
-                e1.printStackTrace();
+                LOG.error("Ошибка загрузки файлов скриптов", e1);
             }
         }
 

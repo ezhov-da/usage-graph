@@ -3,7 +3,7 @@ package ru.ezhov.graph.gui.detailinfopanel;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import ru.ezhov.graph.gui.components.SyntaxTextAreaWithSearchPanel;
 import ru.ezhov.graph.gui.components.TabHeader;
-import ru.ezhov.graph.gui.domain.ScriptGui;
+import ru.ezhov.graph.gui.domain.GraphObjectGui;
 import ru.ezhov.graph.gui.graphdetailpanel.GraphDetailPanel;
 import ru.ezhov.graph.util.PercentScreenDimension;
 
@@ -19,7 +19,7 @@ import java.util.logging.Logger;
 public class DetailInfoPanel extends JPanel {
     private static final Logger LOG = Logger.getLogger(DetailInfoPanel.class.getName());
 
-    private ScriptGui scriptGui;
+    private GraphObjectGui graphObjectGui;
     private JLabel labelId;
     private JButton buttonClose;
     private JTextField textFieldId;
@@ -32,8 +32,8 @@ public class DetailInfoPanel extends JPanel {
     private JTabbedPane tabbedPane;
 
 
-    public DetailInfoPanel(ScriptGui scriptGui) {
-        this.scriptGui = scriptGui;
+    public DetailInfoPanel(GraphObjectGui graphObjectGui) {
+        this.graphObjectGui = graphObjectGui;
         init();
     }
 
@@ -42,12 +42,12 @@ public class DetailInfoPanel extends JPanel {
         labelId = new JLabel("ID");
         buttonClose = new JButton("Закрыть");
         textFieldId = new JTextField();
-        textFieldId.setText(scriptGui.id());
+        textFieldId.setText(graphObjectGui.id());
         labelUseIn = new JLabel("Используется в:");
-        listUseIn = new JList(new DetailPanelListModel(scriptGui.parents()));
+        listUseIn = new JList(new DetailPanelListModel(graphObjectGui.parents()));
         listUseIn.setCellRenderer(new DetailPanelListRender());
         labelUse = new JLabel("Использует:");
-        listUse = new JList(new DetailPanelListModel(scriptGui.children()));
+        listUse = new JList(new DetailPanelListModel(graphObjectGui.children()));
         listUse.setCellRenderer(new DetailPanelListRender());
         tabbedPane = new JTabbedPane();
 
@@ -58,7 +58,7 @@ public class DetailInfoPanel extends JPanel {
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) {
                     JList list = (JList) e.getSource();
-                    ScriptGui view = (ScriptGui) list.getSelectedValue();
+                    GraphObjectGui view = (GraphObjectGui) list.getSelectedValue();
                     JDialog dialog = new JDialog();
                     dialog.setTitle("Просмотр краткой информации о скрипте");
                     dialog.setIconImage(new ImageIcon(this.getClass().getResource("/graph_16x16.png")).getImage());
@@ -84,16 +84,16 @@ public class DetailInfoPanel extends JPanel {
 
         JPanel panelUseCommon = new JPanel();
 
-        if (!scriptGui.parents().isEmpty() & !scriptGui.children().isEmpty()) {
+        if (!graphObjectGui.parents().isEmpty() & !graphObjectGui.children().isEmpty()) {
             panelUseCommon.setLayout(new GridLayout(1, 2));
             panelUseCommon.add(panelUseIn);
             panelUseCommon.add(panelUse);
             panelTopGroup.add(panelUseCommon, BorderLayout.CENTER);
-        } else if (scriptGui.parents().isEmpty() & !scriptGui.children().isEmpty()) {
+        } else if (graphObjectGui.parents().isEmpty() & !graphObjectGui.children().isEmpty()) {
             panelUseCommon.setLayout(new GridLayout(1, 1));
             panelUseCommon.add(panelUse);
             panelTopGroup.add(panelUseCommon, BorderLayout.CENTER);
-        } else if (!scriptGui.parents().isEmpty() & scriptGui.children().isEmpty()) {
+        } else if (!graphObjectGui.parents().isEmpty() & graphObjectGui.children().isEmpty()) {
             panelUseCommon.setLayout(new GridLayout(1, 1));
             panelUseCommon.add(panelUseIn);
             panelTopGroup.add(panelUseCommon, BorderLayout.CENTER);
@@ -104,14 +104,14 @@ public class DetailInfoPanel extends JPanel {
         JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
         splitPane.setTopComponent(panelTopGroup);
 
-        if (scriptGui.parents().isEmpty() && scriptGui.children().isEmpty()) {
+        if (graphObjectGui.parents().isEmpty() && graphObjectGui.children().isEmpty()) {
             //NOT ADD
         } else {
-            tabbedPane.addTab("ГРАФ", new GraphDetailPanel(scriptGui));
-            tabbedPane.setTabComponentAt(0, new TabHeader("ГРАФ", tabbedPane));
+            tabbedPane.addTab("ГРАФ: " + graphObjectGui.id(), new GraphDetailPanel(graphObjectGui));
+            tabbedPane.setTabComponentAt(0, new TabHeader("ГРАФ: " + graphObjectGui.id(), tabbedPane, false));
         }
-        tabbedPane.addTab("Текст", panelText);
-        tabbedPane.setTabComponentAt(tabbedPane.getTabCount() - 1, new TabHeader("Текст", tabbedPane));
+        tabbedPane.addTab("Текст: " + graphObjectGui.id(), panelText);
+        tabbedPane.setTabComponentAt(tabbedPane.getTabCount() - 1, new TabHeader("Текст: " + graphObjectGui.id(), tabbedPane, false));
 
 
         splitPane.setBottomComponent(tabbedPane);
@@ -145,7 +145,7 @@ public class DetailInfoPanel extends JPanel {
     private JPanel panelText() {
         JPanel panel = new JPanel(new BorderLayout());
         try {
-            syntaxTextAreaWithSearchPanel.text(scriptGui.text());
+            syntaxTextAreaWithSearchPanel.text(graphObjectGui.text());
         } catch (Exception e) {
             e.printStackTrace();
             syntaxTextAreaWithSearchPanel.text("Не удалось получить текст скрипта");

@@ -26,8 +26,10 @@ import org.apache.commons.collections15.Predicate;
 import org.apache.commons.collections15.Transformer;
 import org.apache.commons.collections15.functors.ConstantTransformer;
 import org.apache.commons.collections15.functors.MapTransformer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.ezhov.graph.gui.Selected;
-import ru.ezhov.graph.gui.domain.ScriptGui;
+import ru.ezhov.graph.gui.domain.GraphObjectGui;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -39,10 +41,12 @@ import java.util.*;
 
 public class GraphDetailPanel extends JPanel implements ActionListener {
 
+    private static final Logger LOG = LoggerFactory.getLogger(GraphDetailPanel.class);
+
     private static final int GRADIENT_NONE = 0;
     private static final int GRADIENT_RELATIVE = 1;
     private static int gradient_level = GRADIENT_NONE;
-    private ScriptGui scriptGui;
+    private GraphObjectGui graphObjectGui;
     private Selected selected;
     private JCheckBox v_color;
     private JCheckBox e_color;
@@ -96,9 +100,9 @@ public class GraphDetailPanel extends JPanel implements ActionListener {
     private Set<String> seedVertices = new HashSet<String>();
 
 
-    public GraphDetailPanel(ScriptGui scriptGui) {
+    public GraphDetailPanel(GraphObjectGui graphObjectGui) {
         setLayout(new BorderLayout());
-        this.scriptGui = scriptGui;
+        this.graphObjectGui = graphObjectGui;
         this.selected = selected;
         start();
     }
@@ -110,7 +114,6 @@ public class GraphDetailPanel extends JPanel implements ActionListener {
     public JPanel startFunction() {
         Graph<String, String> g = getGraph();
         graphLayout = new FRLayout<String, String>(g);
-        System.out.println(graphLayout.getSize());
 
         vv = new VisualizationViewer<String, String>(graphLayout);
         PickedState<String> picked_state = vv.getPickedVertexState();
@@ -183,30 +186,31 @@ public class GraphDetailPanel extends JPanel implements ActionListener {
         Set<String> sources = new HashSet<String>();
         Set<String> sinks = new HashSet<String>();
 
-        double childrenCount = scriptGui.parents().size();
-        double parentCount = scriptGui.children().size();
+        double childrenCount = graphObjectGui.parents().size();
+        double parentCount = graphObjectGui.children().size();
 
-        for (ScriptGui child : scriptGui.children()) {
-            g.addEdge(scriptGui.id() + "Использует " + child.id(), scriptGui.id(), child.id(), EdgeType.DIRECTED);
-            edge_weight.put(scriptGui.id() + "Использует " + child.id(), (childrenCount + parentCount) != 0 ? ((Double) (childrenCount / (childrenCount + parentCount))) : 0);
+        for (GraphObjectGui child : graphObjectGui.children()) {
+            g.addEdge(graphObjectGui.id() + "Использует " + child.id(), graphObjectGui.id(), child.id(), EdgeType.DIRECTED);
+            edge_weight.put(graphObjectGui.id() + "Использует " + child.id(), (childrenCount + parentCount) != 0 ? ((Double) (childrenCount / (childrenCount + parentCount))) : 0);
             sinks.add(child.id());
         }
 
-        for (ScriptGui parent : scriptGui.parents()) {
-            g.addEdge(parent.id() + "Использует " + scriptGui.id(), parent.id(), scriptGui.id(), EdgeType.DIRECTED);
+        for (GraphObjectGui parent : graphObjectGui.parents()) {
+            g.addEdge(parent.id() + "Использует " + graphObjectGui.id(), parent.id(), graphObjectGui.id(), EdgeType.DIRECTED);
             seedVertices.add(parent.id());
             sources.add(parent.id());
         }
 
-        if (!scriptGui.children().isEmpty()) {
-            seedVertices.add(scriptGui.id());
-            sources.add(scriptGui.id());
-        } else if (!scriptGui.parents().isEmpty()) {
-            sinks.add(scriptGui.id());
+        if (!graphObjectGui.children().isEmpty()) {
+            seedVertices.add(graphObjectGui.id());
+            sources.add(graphObjectGui.id());
+        } else if (!graphObjectGui.parents().isEmpty()) {
+            sinks.add(graphObjectGui.id());
         }
 
-        if (seedVertices.size() < 2)
-            System.out.println("need at least 2 seeds (one source, one sink)");
+        if (seedVertices.size() < 2) {
+            LOG.error("need at least 2 seeds (one source, one sink)");
+        }
 
         VoltageScorer<String, String> voltage_scores =
                 new VoltageScorer<String, String>(g, MapTransformer.getInstance(edge_weight), sources, sinks);

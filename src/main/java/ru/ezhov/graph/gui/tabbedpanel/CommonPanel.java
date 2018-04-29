@@ -3,12 +3,12 @@ package ru.ezhov.graph.gui.tabbedpanel;
 import ru.ezhov.graph.gui.Selected;
 import ru.ezhov.graph.gui.components.TabHeader;
 import ru.ezhov.graph.gui.detailinfopanel.DetailInfoPanel;
-import ru.ezhov.graph.gui.domain.ScriptGui;
-import ru.ezhov.graph.gui.domain.ScriptsGui;
+import ru.ezhov.graph.gui.domain.GraphObjectGui;
+import ru.ezhov.graph.gui.domain.GraphObjectsGui;
 import ru.ezhov.graph.gui.graphpanel.GraphPanel;
-import ru.ezhov.graph.gui.tablepanel.EventType;
-import ru.ezhov.graph.gui.tablepanel.TableScriptEvent;
-import ru.ezhov.graph.gui.tablepanel.TableScriptPanel;
+import ru.ezhov.graph.gui.graphtablepanel.EventType;
+import ru.ezhov.graph.gui.graphtablepanel.GraphTableListener;
+import ru.ezhov.graph.gui.graphtablepanel.GraphTablePanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,12 +23,12 @@ import java.util.logging.Logger;
 public class CommonPanel extends JPanel {
     private static final Logger LOG = Logger.getLogger(CommonPanel.class.getName());
 
-    private ScriptsGui scripts;
-    private TableScriptPanel tableScriptPanel;
+    private GraphObjectsGui scripts;
+    private GraphTablePanel graphTablePanel;
     private JTabbedPane tabbedPane = new JTabbedPane();
     private GraphPanel graphPanel;
 
-    public CommonPanel(ScriptsGui scripts) {
+    public CommonPanel(GraphObjectsGui scripts) {
         this.scripts = scripts;
         init();
     }
@@ -40,11 +40,12 @@ public class CommonPanel extends JPanel {
 
         graphPanel = new GraphPanel(scripts, selected);
 
-        tableScriptPanel = new TableScriptPanel(scripts, new TableScriptEvent() {
+        graphTablePanel = new GraphTablePanel(scripts, new GraphTableListener() {
             @Override
-            public void event(EventType eventType, Object event, final ScriptGui script) {
+            public void event(EventType eventType, Object event, final GraphObjectGui script) {
                 switch (eventType) {
                     case MOUSE_RELEASED:
+                    case LIST_SELECTION_EVENT:
                         selected.setSelected(script.id());
                         CommonPanel.this.repaint();
                         graphPanel.repaint();
@@ -55,16 +56,16 @@ public class CommonPanel extends JPanel {
                             SwingUtilities.invokeLater(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Set<ScriptGui> children = new HashSet<>();
-                                    Set<ScriptGui> parent = new HashSet<>();
+                                    Set<GraphObjectGui> children = new HashSet<>();
+                                    Set<GraphObjectGui> parent = new HashSet<>();
 
-                                    Set<ScriptGui> childrenS = script.children();
-                                    for (ScriptGui s : childrenS) {
+                                    Set<GraphObjectGui> childrenS = script.children();
+                                    for (GraphObjectGui s : childrenS) {
                                         children.add(s);
                                     }
 
-                                    Set<ScriptGui> parentS = script.parents();
-                                    for (ScriptGui s : parentS) {
+                                    Set<GraphObjectGui> parentS = script.parents();
+                                    for (GraphObjectGui s : parentS) {
                                         parent.add(s);
                                     }
 
@@ -76,7 +77,7 @@ public class CommonPanel extends JPanel {
                                         tabbedPane.setSelectedIndex(index);
                                     } else {
                                         tabbedPane.addTab(script.id(), graphPanel);
-                                        tabbedPane.setTabComponentAt(tabbedPane.getTabCount() - 1, new TabHeader(script.id(), tabbedPane));
+                                        tabbedPane.setTabComponentAt(tabbedPane.getTabCount() - 1, new TabHeader(script.id(), tabbedPane, true));
                                         tabbedPane.setSelectedIndex(tabCount);
                                     }
                                 }
@@ -92,10 +93,10 @@ public class CommonPanel extends JPanel {
         splitPane.setDividerLocation(0.4);
         splitPane.setResizeWeight(0.4);
 
-        splitPane.setLeftComponent(tableScriptPanel);
+        splitPane.setLeftComponent(graphTablePanel);
 
         tabbedPane.addTab("ГРАФ", graphPanel);
-        tabbedPane.setTabComponentAt(0, new TabHeader("ГРАФ", tabbedPane));
+        tabbedPane.setTabComponentAt(0, new TabHeader("ГРАФ", tabbedPane, false));
 
         splitPane.setRightComponent(tabbedPane);
 

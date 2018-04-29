@@ -12,7 +12,12 @@ public class TabHeader extends JPanel {
     private JTabbedPane tabbedPane;
     private String text;
 
-    public TabHeader(final String text, final JTabbedPane tabbedPane) {
+
+//    public TabHeader(final String text, final JTabbedPane tabbedPane) {
+//        this(text, tabbedPane, true);
+//    }
+
+    public TabHeader(final String text, final JTabbedPane tabbedPane, boolean isClosed) {
         this.tabbedPane = tabbedPane;
         this.text = text;
         setOpaque(false);
@@ -29,7 +34,7 @@ public class TabHeader extends JPanel {
         JPanel panelButtons = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         panelButtons.setOpaque(false);
         panelButtons.add(buttonFly);
-        if (!"ГРАФ".equals(text)) {
+        if (isClosed) {
             panelButtons.add(buttonClose);
         }
         add(panelButtons, BorderLayout.EAST);
