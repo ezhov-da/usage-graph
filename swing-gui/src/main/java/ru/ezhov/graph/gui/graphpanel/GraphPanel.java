@@ -29,7 +29,6 @@ import org.apache.commons.collections15.functors.ConstantTransformer;
 import org.apache.commons.collections15.functors.MapTransformer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.ezhov.graph.gui.Selected;
 import ru.ezhov.graph.gui.domain.GraphObjectGui;
 import ru.ezhov.graph.gui.domain.GraphObjectsGui;
 
@@ -50,7 +49,6 @@ public class GraphPanel extends JPanel implements ActionListener {
     private static final int GRADIENT_RELATIVE = 1;
     private static int gradient_level = GRADIENT_NONE;
     private GraphObjectsGui scripts;
-    private Selected selected;
     private JCheckBox v_color;
     private JCheckBox e_color;
     private JCheckBox v_stroke;
@@ -103,10 +101,9 @@ public class GraphPanel extends JPanel implements ActionListener {
     private Set<String> seedVertices = new HashSet<String>();
 
 
-    public GraphPanel(GraphObjectsGui scripts, Selected selected) {
+    public GraphPanel(GraphObjectsGui scripts) {
         setLayout(new BorderLayout());
         this.scripts = scripts;
-        this.selected = selected;
         start();
     }
 
@@ -236,7 +233,6 @@ public class GraphPanel extends JPanel implements ActionListener {
     /**
      * @param jp panel to which controls will be added
      */
-    @SuppressWarnings("serial")
     protected void addBottomControls(final JPanel jp) {
         final JPanel control_panel = new JPanel();
         control_panel.setLayout(new BoxLayout(control_panel, BoxLayout.Y_AXIS));
@@ -486,6 +482,12 @@ public class GraphPanel extends JPanel implements ActionListener {
 
         comboGrid.add(positionPanel);
         return both_panel;
+    }
+
+    private GraphObjectGui graphObjectGuiSelected;
+
+    public void setSelectedGraphObject(GraphObjectGui graphObject) {
+        this.graphObjectGuiSelected = graphObject;
     }
 
     public void actionPerformed(ActionEvent e) {
@@ -851,15 +853,13 @@ public class GraphPanel extends JPanel implements ActionListener {
                         return new Color(1f, 0, 0, alpha);
                 }
             } else {
-                if (v.equals(selected.getSelected())) {
+                if (graphObjectGuiSelected != null && v.equals(graphObjectGuiSelected.id())) {
                     return Color.BLUE;
                 } else {
                     return Color.RED;
                 }
 
             }
-
-
         }
     }
 

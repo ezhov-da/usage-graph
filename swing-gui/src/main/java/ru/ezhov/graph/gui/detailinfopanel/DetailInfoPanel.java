@@ -31,7 +31,6 @@ public class DetailInfoPanel extends JPanel {
 
     private JTabbedPane tabbedPane;
 
-
     public DetailInfoPanel(GraphObjectGui graphObjectGui) {
         this.graphObjectGui = graphObjectGui;
         init();
@@ -112,7 +111,6 @@ public class DetailInfoPanel extends JPanel {
         }
         tabbedPane.addTab("Текст: " + graphObjectGui.id(), panelText);
         tabbedPane.setTabComponentAt(tabbedPane.getTabCount() - 1, new TabHeader("Текст: " + graphObjectGui.id(), tabbedPane, false));
-
 
         splitPane.setBottomComponent(tabbedPane);
         splitPane.setResizeWeight(0.3);

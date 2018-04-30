@@ -33,24 +33,22 @@ public class BasicPanel extends JPanel {
         JLabel labelStub = new JLabel("Построитель графов");
         labelStub.setHorizontalAlignment(SwingConstants.CENTER);
         panelStub.add(labelStub, BorderLayout.CENTER);
-//        add(directoryPanel, BorderLayout.NORTH);
         panelCenter = panelStub;
         buttonLoad = new JButton("Анализировать");
         buttonLoad.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-
                     AnalyseThread worker = new AnalyseThread();
                     worker.execute();
                 } catch (Exception e1) {
+                    LOG.error("Ошибка загрузки данных для анализа", e1);
                     JOptionPane.showMessageDialog(
                             BasicPanel.this,
                             "Ошибка загрузки данных для анализа",
                             "Ошибка загрузки",
                             JOptionPane.INFORMATION_MESSAGE
                     );
-                    LOG.error("Ошибка загрузки данных для анализа", e1);
                 }
             }
         });

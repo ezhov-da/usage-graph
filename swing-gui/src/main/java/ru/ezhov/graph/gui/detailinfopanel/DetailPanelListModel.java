@@ -5,7 +5,7 @@ import ru.ezhov.graph.gui.domain.GraphObjectGui;
 import javax.swing.*;
 import java.util.*;
 
-public class DetailPanelListModel extends DefaultListModel {
+class DetailPanelListModel extends DefaultListModel {
 
     public DetailPanelListModel(Set<GraphObjectGui> graphObjectGuis) {
         List<GraphObjectGui> views = new ArrayList<>();

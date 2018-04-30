@@ -6,7 +6,7 @@ import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 import javax.swing.table.TableStringConverter;
 
-public class GraphTableRowSorter extends TableRowSorter<TableModel> {
+class GraphTableRowSorter extends TableRowSorter<TableModel> {
     private GraphTableModel graphTableModel;
 
     public GraphTableRowSorter(GraphTableModel graphTableModel) {

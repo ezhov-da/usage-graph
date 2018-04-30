@@ -27,7 +27,7 @@ public class AnalyseObjectToGraphObjectGui {
     private class DefaultGraphObjectsGui implements GraphObjectsGui {
         private AnalyzedObjects analyzedObjects;
 
-        public DefaultGraphObjectsGui(AnalyzedObjects analyzedObjects) {
+        DefaultGraphObjectsGui(AnalyzedObjects analyzedObjects) {
             this.analyzedObjects = analyzedObjects;
         }
 
@@ -44,12 +44,11 @@ public class AnalyseObjectToGraphObjectGui {
         }
 
         private class DefaultGraphObject implements GraphObjectGui {
-
             private String id;
             private Set<GraphObjectGui> parents;
             private Set<GraphObjectGui> children;
 
-            public DefaultGraphObject(String id) {
+            DefaultGraphObject(String id) {
                 this.id = id;
             }
 
@@ -67,10 +66,12 @@ public class AnalyseObjectToGraphObjectGui {
             public double stability() {
                 double childrenCount = analyzedObjects.children(id).size();
                 double parentCount = analyzedObjects.parents(id).size();
-
-                return new BigDecimal(
-                        (childrenCount + parentCount) != 0 ? childrenCount / (childrenCount + parentCount) : 0
-                ).round(new MathContext(2)).doubleValue();
+                return
+                        new BigDecimal(
+                                (childrenCount + parentCount) != 0 ? childrenCount / (childrenCount + parentCount) : 0
+                        ).round(
+                                new MathContext(2)
+                        ).doubleValue();
             }
 
             @Override

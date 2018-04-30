@@ -1,6 +1,5 @@
 package ru.ezhov.graph.gui.tabbedpanel;
 
-import ru.ezhov.graph.gui.Selected;
 import ru.ezhov.graph.gui.components.TabHeader;
 import ru.ezhov.graph.gui.detailinfopanel.DetailInfoPanel;
 import ru.ezhov.graph.gui.domain.GraphObjectGui;
@@ -23,30 +22,26 @@ import java.util.logging.Logger;
 public class CommonPanel extends JPanel {
     private static final Logger LOG = Logger.getLogger(CommonPanel.class.getName());
 
-    private GraphObjectsGui scripts;
+    private GraphObjectsGui graphObjectsGui;
     private GraphTablePanel graphTablePanel;
     private JTabbedPane tabbedPane = new JTabbedPane();
     private GraphPanel graphPanel;
 
-    public CommonPanel(GraphObjectsGui scripts) {
-        this.scripts = scripts;
+    public CommonPanel(GraphObjectsGui graphObjectsGui) {
+        this.graphObjectsGui = graphObjectsGui;
         init();
     }
 
     private void init() {
         setLayout(new BorderLayout());
-
-        final Selected selected = new Selected();
-
-        graphPanel = new GraphPanel(scripts, selected);
-
-        graphTablePanel = new GraphTablePanel(scripts, new GraphTableListener() {
+        graphPanel = new GraphPanel(graphObjectsGui);
+        graphTablePanel = new GraphTablePanel(graphObjectsGui, new GraphTableListener() {
             @Override
-            public void event(EventType eventType, Object event, final GraphObjectGui script) {
+            public void event(EventType eventType, Object event, final GraphObjectGui graphObjectGui) {
                 switch (eventType) {
                     case MOUSE_RELEASED:
                     case LIST_SELECTION_EVENT:
-                        selected.setSelected(script.id());
+                        graphPanel.setSelectedGraphObject(graphObjectGui);
                         CommonPanel.this.repaint();
                         graphPanel.repaint();
                         break;
@@ -59,25 +54,25 @@ public class CommonPanel extends JPanel {
                                     Set<GraphObjectGui> children = new HashSet<>();
                                     Set<GraphObjectGui> parent = new HashSet<>();
 
-                                    Set<GraphObjectGui> childrenS = script.children();
+                                    Set<GraphObjectGui> childrenS = graphObjectGui.children();
                                     for (GraphObjectGui s : childrenS) {
                                         children.add(s);
                                     }
 
-                                    Set<GraphObjectGui> parentS = script.parents();
+                                    Set<GraphObjectGui> parentS = graphObjectGui.parents();
                                     for (GraphObjectGui s : parentS) {
                                         parent.add(s);
                                     }
 
-                                    DetailInfoPanel graphPanel = new DetailInfoPanel(script);
+                                    DetailInfoPanel graphPanel = new DetailInfoPanel(graphObjectGui);
                                     int tabCount = tabbedPane.getTabCount();
 
-                                    int index = tabbedPane.indexOfTab(script.id());
+                                    int index = tabbedPane.indexOfTab(graphObjectGui.id());
                                     if (index != -1) {
                                         tabbedPane.setSelectedIndex(index);
                                     } else {
-                                        tabbedPane.addTab(script.id(), graphPanel);
-                                        tabbedPane.setTabComponentAt(tabbedPane.getTabCount() - 1, new TabHeader(script.id(), tabbedPane, true));
+                                        tabbedPane.addTab(graphObjectGui.id(), graphPanel);
+                                        tabbedPane.setTabComponentAt(tabbedPane.getTabCount() - 1, new TabHeader(graphObjectGui.id(), tabbedPane, true));
                                         tabbedPane.setSelectedIndex(tabCount);
                                     }
                                 }
@@ -88,19 +83,13 @@ public class CommonPanel extends JPanel {
             }
         });
 
-
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         splitPane.setDividerLocation(0.4);
         splitPane.setResizeWeight(0.4);
-
         splitPane.setLeftComponent(graphTablePanel);
-
         tabbedPane.addTab("ГРАФ", graphPanel);
         tabbedPane.setTabComponentAt(0, new TabHeader("ГРАФ", tabbedPane, false));
-
         splitPane.setRightComponent(tabbedPane);
-
         add(splitPane, BorderLayout.CENTER);
-
     }
 }

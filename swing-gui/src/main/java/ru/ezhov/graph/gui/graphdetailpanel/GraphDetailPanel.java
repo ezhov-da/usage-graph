@@ -29,7 +29,6 @@ import org.apache.commons.collections15.functors.ConstantTransformer;
 import org.apache.commons.collections15.functors.MapTransformer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.ezhov.graph.gui.Selected;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -47,7 +46,6 @@ public class GraphDetailPanel extends JPanel implements ActionListener {
     private static final int GRADIENT_RELATIVE = 1;
     private static int gradient_level = GRADIENT_NONE;
     private GraphObjectGui graphObjectGui;
-    private Selected selected;
     private JCheckBox v_color;
     private JCheckBox e_color;
     private JCheckBox v_stroke;
@@ -103,7 +101,6 @@ public class GraphDetailPanel extends JPanel implements ActionListener {
     public GraphDetailPanel(GraphObjectGui graphObjectGui) {
         setLayout(new BorderLayout());
         this.graphObjectGui = graphObjectGui;
-        this.selected = selected;
         start();
     }
 
