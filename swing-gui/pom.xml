@@ -26,152 +26,40 @@
 
     <dependencies>
 
-        <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
-
+        <!-- https://mvnrepository.com/artifact/net.sf.jung/jung-algorithms -->
         <dependency>
-            <groupId>ru.ezhov</groupId>
-            <artifactId>collections-generic-4.01</artifactId>
-            <version>1.0.0</version>
-            <scope>system</scope>
-            <systemPath>E:/jung2-2_0_1/collections-generic-4.01.jar</systemPath>
+            <groupId>net.sf.jung</groupId>
+            <artifactId>jung-algorithms</artifactId>
+            <version>2.0.1</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/net.sf.jung/jung-api -->
         <dependency>
-            <groupId>ru.ezhov</groupId>
-            <artifactId>colt-1.2.0</artifactId>
-            <version>1.0.0</version>
-            <scope>system</scope>
-            <systemPath>E:/jung2-2_0_1/colt-1.2.0.jar</systemPath>
+            <groupId>net.sf.jung</groupId>
+            <artifactId>jung-api</artifactId>
+            <version>2.0.1</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/net.sf.jung/jung-graph-impl -->
         <dependency>
-            <groupId>ru.ezhov</groupId>
-            <artifactId>concurrent-1.3.4</artifactId>
-            <version>1.0.0</version>
-            <scope>system</scope>
-            <systemPath>E:/jung2-2_0_1/concurrent-1.3.4.jar</systemPath>
+            <groupId>net.sf.jung</groupId>
+            <artifactId>jung-graph-impl</artifactId>
+            <version>2.0.1</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/net.sf.jung/jung-io -->
         <dependency>
-            <groupId>ru.ezhov</groupId>
-            <artifactId>j3d-core-1.3.1</artifactId>
-            <version>1.0.0</version>
-            <scope>system</scope>
-            <systemPath>E:/jung2-2_0_1/j3d-core-1.3.1.jar</systemPath>
+            <groupId>net.sf.jung</groupId>
+            <artifactId>jung-io</artifactId>
+            <version>2.0.1</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/net.sf.jung/jung-visualization -->
         <dependency>
-            <groupId>ru.ezhov</groupId>
-            <artifactId>jung-3d-2.0.1</artifactId>
-            <version>1.0.0</version>
-            <scope>system</scope>
-            <systemPath>E:/jung2-2_0_1/jung-3d-2.0.1.jar</systemPath>
+            <groupId>net.sf.jung</groupId>
+            <artifactId>jung-visualization</artifactId>
+            <version>2.0.1</version>
         </dependency>
-
-        <dependency>
-            <groupId>ru.ezhov</groupId>
-            <artifactId>jung-3d-demos-2.0.1</artifactId>
-            <version>1.0.0</version>
-            <scope>system</scope>
-            <systemPath>E:/jung2-2_0_1/jung-3d-demos-2.0.1.jar</systemPath>
-        </dependency>
-
-        <dependency>
-            <groupId>ru.ezhov</groupId>
-            <artifactId>jung-algorithms-2.0.1</artifactId>
-            <version>1.0.0</version>
-            <scope>system</scope>
-            <systemPath>E:/jung2-2_0_1/jung-algorithms-2.0.1.jar</systemPath>
-        </dependency>
-
-        <dependency>
-            <groupId>ru.ezhov</groupId>
-            <artifactId>jung-api-2.0.1</artifactId>
-            <version>1.0.0</version>
-            <scope>system</scope>
-            <systemPath>E:/jung2-2_0_1/jung-api-2.0.1.jar</systemPath>
-        </dependency>
-
-        <dependency>
-            <groupId>ru.ezhov</groupId>
-            <artifactId>jung-graph-impl-2.0.1</artifactId>
-            <version>1.0.0</version>
-            <scope>system</scope>
-            <systemPath>E:/jung2-2_0_1/jung-graph-impl-2.0.1.jar</systemPath>
-        </dependency>
-
-        <dependency>
-            <groupId>ru.ezhov</groupId>
-            <artifactId>jung-io-2.0.1</artifactId>
-            <version>1.0.0</version>
-            <scope>system</scope>
-            <systemPath>E:/jung2-2_0_1/jung-io-2.0.1.jar</systemPath>
-        </dependency>
-
-        <dependency>
-            <groupId>ru.ezhov</groupId>
-            <artifactId>jung-jai-2.0.1</artifactId>
-            <version>1.0.0</version>
-            <scope>system</scope>
-            <systemPath>E:/jung2-2_0_1/jung-jai-2.0.1.jar</systemPath>
-        </dependency>
-
-        <dependency>
-            <groupId>ru.ezhov</groupId>
-            <artifactId>jung-jai-samples-2.0.1</artifactId>
-            <version>1.0.0</version>
-            <scope>system</scope>
-            <systemPath>E:/jung2-2_0_1/jung-jai-samples-2.0.1.jar</systemPath>
-        </dependency>
-
-        <dependency>
-            <groupId>ru.ezhov</groupId>
-            <artifactId>jung-samples-2.0.1</artifactId>
-            <version>1.0.0</version>
-            <scope>system</scope>
-            <systemPath>E:/jung2-2_0_1/jung-samples-2.0.1.jar</systemPath>
-        </dependency>
-
-        <dependency>
-            <groupId>ru.ezhov</groupId>
-            <artifactId>jung-visualization-2.0.1</artifactId>
-            <version>1.0.0</version>
-            <scope>system</scope>
-            <systemPath>E:/jung2-2_0_1/jung-visualization-2.0.1.jar</systemPath>
-        </dependency>
-
-        <dependency>
-            <groupId>ru.ezhov</groupId>
-            <artifactId>stax-api-1.0.1</artifactId>
-            <version>1.0.0</version>
-            <scope>system</scope>
-            <systemPath>E:/jung2-2_0_1/stax-api-1.0.1.jar</systemPath>
-        </dependency>
-
-        <dependency>
-            <groupId>ru.ezhov</groupId>
-            <artifactId>ru.ezhov.graph</artifactId>
-            <version>1.0.0</version>
-            <scope>system</scope>
-            <systemPath>E:/jung2-2_0_1/collections-generic-4.01.jar</systemPath>
-        </dependency>
-
-        <dependency>
-            <groupId>ru.ezhov</groupId>
-            <artifactId>vecmath-1.3.1</artifactId>
-            <version>1.0.0</version>
-            <scope>system</scope>
-            <systemPath>E:/jung2-2_0_1/vecmath-1.3.1.jar</systemPath>
-        </dependency>
-
-        <dependency>
-            <groupId>ru.ezhov</groupId>
-            <artifactId>wstx-asl-3.2.6</artifactId>
-            <version>1.0.0</version>
-            <scope>system</scope>
-            <systemPath>E:/jung2-2_0_1/wstx-asl-3.2.6.jar</systemPath>
-        </dependency>
-        <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
 
         <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
         <dependency>
