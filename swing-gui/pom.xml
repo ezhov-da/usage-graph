@@ -14,15 +14,56 @@
     <version>1.0-SNAPSHOT</version>
 
     <name>swing-gui</name>
-    <!-- FIXME change it to the project's website -->
-    <url>http://www.example.com</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.7</maven.compiler.source>
         <maven.compiler.target>1.7</maven.compiler.target>
         <directory.extended.library>lib</directory.extended.library>
+
+        <!--настройка копирования зависимостей для работы анализа скрипта-->
+        <!--реализация анализа-->
+        <analyse-script>analyse-script-1.0-SNAPSHOT.jar</analyse-script>
+        <analyse-script-jar-source>
+            ../analyse-script/target/${analyse-script}
+        </analyse-script-jar-source>
+        <analyse-script-jar-target>
+            ${project.build.directory}/lib/${analyse-script}
+        </analyse-script-jar-target>
+        <!--реализация плагина-->
+        <analyse-script-swing-plugin>
+            swing-gui-source-analyse-plugin-script-1.0-SNAPSHOT.jar
+        </analyse-script-swing-plugin>
+        <analyse-script-jar-source-swing-plugin>
+            ../swing-gui-source-analyse-plugin-script/target/${analyse-script-swing-plugin}
+        </analyse-script-jar-source-swing-plugin>
+        <analyse-script-jar-target-swing-plugin>
+            ${project.build.directory}/lib/${analyse-script-swing-plugin}
+        </analyse-script-jar-target-swing-plugin>
+
+        <run-file>${project.build.directory}/run.bat</run-file>
+        <main-class>ru.ezhov.graph.App</main-class>
     </properties>
+
+    <profiles>
+        <profile>
+        <id>test</id>
+        <properties>
+            <run-file-body>
+                cd /d %~dp0 &amp;&amp; "%JAVA_HOME%\bin\javaw" -cp lib\${analyse-script-swing-plugin};lib\${analyse-script};${parent.artifactId}.jar; -Xmx768m "${main-class}"
+            </run-file-body>
+        </properties>
+    </profile>
+
+        <profile>
+            <id>prod</id>
+            <properties>
+                <run-file-body>
+                    cd /d %~dp0 &amp;&amp; start "run" "%JAVA_HOME%\bin\javaw" -cp lib\${analyse-script-swing-plugin};lib\${analyse-script};${parent.artifactId}.jar; -Xmx768m "${main-class}"
+                </run-file-body>
+            </properties>
+        </profile>
+    </profiles>
 
     <dependencies>
 
@@ -141,7 +182,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>ru.ezhov.graph.App</mainClass>
+                            <mainClass>${main-class}</mainClass>
                             <classpathPrefix>${directory.extended.library}/</classpathPrefix>
                         </manifest>
                     </archive>
@@ -163,6 +204,30 @@
                                 ${project.build.directory}/${directory.extended.library}/
                             </outputDirectory>
                         </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.7</version>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <tasks>
+                                <copy file="${analyse-script-jar-source}"
+                                      tofile="${analyse-script-jar-target}"/>
+
+                                <copy file="${analyse-script-jar-source-swing-plugin}"
+                                      tofile="${analyse-script-jar-target-swing-plugin}"/>
+
+                                <echo file="${run-file}" message="${run-file-body}"/>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>

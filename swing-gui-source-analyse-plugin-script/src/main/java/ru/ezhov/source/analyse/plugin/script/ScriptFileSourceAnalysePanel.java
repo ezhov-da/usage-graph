@@ -26,6 +26,7 @@ public class ScriptFileSourceAnalysePanel extends AbstractSourceAnalysePanel {
     private JFileChooser fileChooser = new JFileChooser("");
     private JComboBox comboBoxLastUser;
     private PathStore pathStore = new FilePathStore();
+    private LastUsageComboBoxModel lastUsageComboBoxModel;
 
     public ScriptFileSourceAnalysePanel() {
         setLayout(new BorderLayout());
@@ -62,8 +63,8 @@ public class ScriptFileSourceAnalysePanel extends AbstractSourceAnalysePanel {
         panelComboBox.add(new JLabel("Последние загруженные скрипты: "), BorderLayout.WEST);
         panelComboBox.add(comboBoxLastUser, BorderLayout.CENTER);
 
-        final ComboBoxModel comboBoxModel = new ComboBoxModel(pathStore);
-        comboBoxLastUser.setModel(comboBoxModel);
+        lastUsageComboBoxModel = new LastUsageComboBoxModel(pathStore);
+        comboBoxLastUser.setModel(lastUsageComboBoxModel);
         add(panelComboBox, BorderLayout.SOUTH);
 
         comboBoxLastUser.addItemListener(new ItemListener() {
@@ -88,19 +89,21 @@ public class ScriptFileSourceAnalysePanel extends AbstractSourceAnalysePanel {
                 );
                 return NullAnalyzedObjects.NULL_ANALYZED_OBJECTS;
             } else {
-                return ScriptsFactory.fromFile(new File(textField.getText()));
+                pathStore.path(text);
+                lastUsageComboBoxModel.reload();
+                return ScriptsFactory.fromFile(new File(text));
             }
         } catch (Exception ex) {
             throw new AnalyseException(ex);
         }
     }
 
-    private class ComboBoxModel extends AbstractListModel<Path> implements MutableComboBoxModel<Path>, Serializable {
+    private class LastUsageComboBoxModel extends AbstractListModel<Path> implements MutableComboBoxModel<Path>, Serializable {
         private PathStore pathStore;
         private Path path;
         private java.util.List<Path> list;
 
-        public ComboBoxModel(PathStore pathStore) {
+        public LastUsageComboBoxModel(PathStore pathStore) {
             this.pathStore = pathStore;
             try {
                 list = pathStore.paths();
@@ -161,7 +164,6 @@ public class ScriptFileSourceAnalysePanel extends AbstractSourceAnalysePanel {
 
         @Override
         public Path getElementAt(int index) {
-
             return list.get(index);
         }
     }
