@@ -1,6 +1,5 @@
 set BASIC_FOLDER=%~dp0
 
-
 cd /d %~dp0\swing-gui\target\usage-graph.jar
 
 "%JAVA_HOME%\bin\java" ^

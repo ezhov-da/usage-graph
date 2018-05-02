@@ -309,9 +309,12 @@ public class GraphPanel extends JPanel implements ActionListener {
         vertex_panel.add(v_stroke);
         vertex_panel.add(v_labels);
         vertex_panel.add(v_shape);
-        vertex_panel.add(v_size);
-        vertex_panel.add(v_aspect);
-        vertex_panel.add(v_small);
+        //TODO: реализовать
+        //vertex_panel.add(v_size);
+        //TODO: реализовать
+        //vertex_panel.add(v_aspect);
+        //TODO: реализовать
+        //vertex_panel.add(v_small);
         return vertex_panel;
     }
 
@@ -392,10 +395,11 @@ public class GraphPanel extends JPanel implements ActionListener {
         arrow_panel.setAlignmentX(Component.LEFT_ALIGNMENT);
         edge_panel.add(arrow_panel);
 
-        e_color.setAlignmentX(Component.LEFT_ALIGNMENT);
-        edge_panel.add(e_color);
-        e_labels.setAlignmentX(Component.LEFT_ALIGNMENT);
-        edge_panel.add(e_labels);
+        //TODO: реализовать
+        //e_color.setAlignmentX(Component.LEFT_ALIGNMENT);
+        //edge_panel.add(e_color);
+        //e_labels.setAlignmentX(Component.LEFT_ALIGNMENT);
+        //edge_panel.add(e_labels);
         return edge_panel;
     }
 
@@ -895,42 +899,43 @@ public class GraphPanel extends JPanel implements ActionListener {
             if (pickSupport != null) {
                 final String v = pickSupport.getVertex(vv.getGraphLayout(), p.getX(), p.getY());
                 if (v != null) {
-                    JPopupMenu popup = new JPopupMenu();
-                    popup.add(new AbstractAction("Уменьшить прозрачность") {
-                        {
-                            putValue(AbstractAction.SMALL_ICON, new ImageIcon(this.getClass().getResource("/brightness_darken_16x16.png")));
-                        }
-
-                        public void actionPerformed(ActionEvent e) {
-                            Double value = Math.max(0, transparency.get(v).doubleValue() - 0.1);
-                            transparency.put(v, value);
-                            vv.repaint();
-                        }
-                    });
-                    popup.add(new AbstractAction("Повысить прозрачность") {
-                        {
-                            putValue(AbstractAction.SMALL_ICON, new ImageIcon(this.getClass().getResource("/brightness_16x16.png")));
-                        }
-
-                        public void actionPerformed(ActionEvent e) {
-                            Double value = Math.min(1, transparency.get(v).doubleValue() + 0.1);
-                            transparency.put(v, value);
-                            vv.repaint();
-                        }
-                    });
-                    popup.show(vv, e.getX(), e.getY());
-                } else {
-                    final Number edge = pickSupport.getEdge(vv.getGraphLayout(), p.getX(), p.getY());
-                    if (edge != null) {
-                        JPopupMenu popup = new JPopupMenu();
-                        popup.add(new AbstractAction(edge.toString()) {
-                            public void actionPerformed(ActionEvent e) {
-                                System.err.println("got " + edge);
-                            }
-                        });
-                        popup.show(vv, e.getX(), e.getY());
-
-                    }
+                    //TODO: реализовать
+//                    JPopupMenu popup = new JPopupMenu();
+//                    popup.add(new AbstractAction("Уменьшить прозрачность") {
+//                        {
+//                            putValue(AbstractAction.SMALL_ICON, new ImageIcon(this.getClass().getResource("/brightness_darken_16x16.png")));
+//                        }
+//
+//                        public void actionPerformed(ActionEvent e) {
+//                            Double value = Math.max(0, transparency.get(v).doubleValue() - 0.1);
+//                            transparency.put(v, value);
+//                            vv.repaint();
+//                        }
+//                    });
+//                    popup.add(new AbstractAction("Повысить прозрачность") {
+//                        {
+//                            putValue(AbstractAction.SMALL_ICON, new ImageIcon(this.getClass().getResource("/brightness_16x16.png")));
+//                        }
+//
+//                        public void actionPerformed(ActionEvent e) {
+//                            Double value = Math.min(1, transparency.get(v).doubleValue() + 0.1);
+//                            transparency.put(v, value);
+//                            vv.repaint();
+//                        }
+//                    });
+//                    popup.show(vv, e.getX(), e.getY());
+//                } else {
+//                    final Number edge = pickSupport.getEdge(vv.getGraphLayout(), p.getX(), p.getY());
+//                    if (edge != null) {
+//                        JPopupMenu popup = new JPopupMenu();
+//                        popup.add(new AbstractAction(edge.toString()) {
+//                            public void actionPerformed(ActionEvent e) {
+//                                System.err.println("got " + edge);
+//                            }
+//                        });
+//                        popup.show(vv, e.getX(), e.getY());
+//
+//                    }
                 }
             }
         }
