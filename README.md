@@ -10,3 +10,4 @@
  * swing-gui-source-analyse-plugin-script - реализация swing интерфеса для загрузки скриптового графа
  * swing-gui - основной swing интерфейс для работы
  
+ ![screenshot](usage-graph.png)
