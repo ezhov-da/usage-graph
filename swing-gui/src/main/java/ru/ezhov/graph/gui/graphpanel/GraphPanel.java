@@ -99,6 +99,7 @@ public class GraphPanel extends JPanel implements ActionListener {
     private VisualizationViewer<String, String> vv;
     private DefaultModalGraphMouse<String, String> gm;
     private Set<String> seedVertices = new HashSet<String>();
+    private Graph<String, String> g;
 
 
     public GraphPanel(GraphObjectsGui scripts) {
@@ -112,7 +113,7 @@ public class GraphPanel extends JPanel implements ActionListener {
     }
 
     public JPanel startFunction() {
-        Graph<String, String> g = getGraph();
+        g = getGraph();
         graphLayout = new FRLayout<String, String>(g);
 
         vv = new VisualizationViewer<String, String>(graphLayout);
@@ -261,7 +262,7 @@ public class GraphPanel extends JPanel implements ActionListener {
 
     private Component createSliderPanel() {
         JPanel panel = new JPanel(new BorderLayout());
-        panel.setBorder(BorderFactory.createTitledBorder("Размер полотна"));
+        panel.setBorder(BorderFactory.createTitledBorder("Размер полотна (перерисовка графа)"));
         slider = new JSlider(JSlider.HORIZONTAL, (int) graphLayout.getSize().getWidth(), 5000, (int) graphLayout.getSize().getWidth());
         JButton button = new JButton("Применить");
         final JTextField textField = new JTextField();
@@ -279,7 +280,9 @@ public class GraphPanel extends JPanel implements ActionListener {
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                graphLayout = new FRLayout<String, String>(g);
                 GraphPanel.this.graphLayout.setSize(new Dimension(slider.getValue(), slider.getValue()));
+                vv.setGraphLayout(graphLayout);
                 vv.repaint();
             }
         });

@@ -22,13 +22,13 @@ import edu.uci.ics.jung.visualization.picking.PickedInfo;
 import edu.uci.ics.jung.visualization.picking.PickedState;
 import edu.uci.ics.jung.visualization.renderers.BasicEdgeArrowRenderingSupport;
 import edu.uci.ics.jung.visualization.renderers.CenterEdgeArrowRenderingSupport;
-import ru.ezhov.graph.gui.domain.GraphObjectGui;
 import org.apache.commons.collections15.Predicate;
 import org.apache.commons.collections15.Transformer;
 import org.apache.commons.collections15.functors.ConstantTransformer;
 import org.apache.commons.collections15.functors.MapTransformer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.ezhov.graph.gui.domain.GraphObjectGui;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -96,6 +96,7 @@ public class GraphDetailPanel extends JPanel implements ActionListener {
     private VisualizationViewer<String, String> vv;
     private DefaultModalGraphMouse<String, String> gm;
     private Set<String> seedVertices = new HashSet<String>();
+    private Graph<String, String> g;
 
 
     public GraphDetailPanel(GraphObjectGui graphObjectGui) {
@@ -109,7 +110,7 @@ public class GraphDetailPanel extends JPanel implements ActionListener {
     }
 
     public JPanel startFunction() {
-        Graph<String, String> g = getGraph();
+        g = getGraph();
         graphLayout = new FRLayout<String, String>(g);
 
         vv = new VisualizationViewer<String, String>(graphLayout);
@@ -257,7 +258,7 @@ public class GraphDetailPanel extends JPanel implements ActionListener {
 
     private Component createSliderPanel() {
         JPanel panel = new JPanel(new BorderLayout());
-        panel.setBorder(BorderFactory.createTitledBorder("Размер полотна"));
+        panel.setBorder(BorderFactory.createTitledBorder("Размер полотна (перерисовка графа)"));
         slider = new JSlider(JSlider.HORIZONTAL, (int) graphLayout.getSize().getWidth(), 5000, (int) graphLayout.getSize().getWidth());
         JButton button = new JButton("Применить");
         final JTextField textField = new JTextField();
@@ -275,7 +276,9 @@ public class GraphDetailPanel extends JPanel implements ActionListener {
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                graphLayout = new FRLayout<String, String>(g);
                 GraphDetailPanel.this.graphLayout.setSize(new Dimension(slider.getValue(), slider.getValue()));
+                vv.setGraphLayout(graphLayout);
                 vv.repaint();
             }
         });

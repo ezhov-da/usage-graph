@@ -38,7 +38,7 @@ class FileScripts implements AnalyzedObjects {
             }
         } else {
             String path = file.getAbsolutePath();
-            LOG.debug("Find file: {}", path);
+            LOG.debug("Обработка файла: {}", path);
             path = path.replace('\\', '/');
             int index = path.indexOf("scripts");
             try {
@@ -52,8 +52,13 @@ class FileScripts implements AnalyzedObjects {
 
                 List<String> groups = new ArrayList<>();
                 while (matcher.find()) {
-                    String textFind = matcher.group();
-                    groups.add(textFind);
+                    String result;
+                    String textFind = result = matcher.group();
+                    if (!textFind.startsWith("/")) {
+                        result = "/" + textFind;
+                        LOG.debug("Обнаружен скрипт [{}] с неверным объявлением: [{}], исправлен на: [{}]", path, textFind, result);
+                    }
+                    groups.add(result);
                 }
 
                 if (!usageScript.containsKey(id)) {
@@ -76,7 +81,7 @@ class FileScripts implements AnalyzedObjects {
     private void initParentAndChildren() throws Exception {
         Set<Map.Entry<String, AnalyzedObject>> entries = scripts.entrySet();
         for (Map.Entry<String, AnalyzedObject> entry : entries) {
-            LOG.debug("Use ID: {}", entry.getKey());
+            LOG.debug("Используется ID: {}", entry.getKey());
             for (Map.Entry<String, AnalyzedObject> entryInner : entries) {
                 //не используем самого себя
                 if (entry.getKey().equals(entryInner.getKey())) {

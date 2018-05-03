@@ -92,8 +92,8 @@ public class GraphTablePanel extends JPanel {
                 if ("".equals(text)) {
                     return true;
                 } else {
-                    String id = (String) entry.getValue(0);
-                    return id.toLowerCase().trim().contains(text.toLowerCase().trim());
+                    GraphObjectGui graphObjectGui = (GraphObjectGui) entry.getValue(0);
+                    return graphObjectGui.id().toLowerCase().trim().contains(text.toLowerCase().trim());
                 }
             }
         };
