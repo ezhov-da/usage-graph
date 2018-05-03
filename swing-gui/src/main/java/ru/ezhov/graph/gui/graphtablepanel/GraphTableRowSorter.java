@@ -5,6 +5,7 @@ import ru.ezhov.graph.gui.domain.GraphObjectGui;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 import javax.swing.table.TableStringConverter;
+import java.math.BigDecimal;
 
 class GraphTableRowSorter extends TableRowSorter<TableModel> {
     private GraphTableModel graphTableModel;
@@ -30,7 +31,7 @@ class GraphTableRowSorter extends TableRowSorter<TableModel> {
                         case 3:
                             return numberForEquals(graphObjectGui.rows() + "");
                         case 4:
-                            return numberForEquals(graphObjectGui.stability() + "");
+                            return new BigDecimal(graphObjectGui.stability()).toString();
                         default:
                             return "";
                     }
