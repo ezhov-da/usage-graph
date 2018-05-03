@@ -36,12 +36,17 @@ public class GraphTablePanel extends JPanel {
         table.setModel(graphTableModel);
         table.setDefaultRenderer(Object.class, new GraphTableRender());
         table.setRowSorter(new GraphTableRowSorter(graphTableModel));
+        table.getColumn(table.getColumnName(0)).setPreferredWidth(400);
+        table.getColumn(table.getColumnName(0)).setMaxWidth(400);
+        table.getColumn(table.getColumnName(1)).setPreferredWidth(30);
+        table.getColumn(table.getColumnName(2)).setPreferredWidth(30);
+        table.getColumn(table.getColumnName(3)).setPreferredWidth(30);
+        table.getColumn(table.getColumnName(4)).setPreferredWidth(30);
 
         infoPanel = new InfoPanel();
         add(searchPanel, BorderLayout.NORTH);
         add(new JScrollPane(table), BorderLayout.CENTER);
         add(infoPanel, BorderLayout.SOUTH);
-
 
         table.addMouseListener(new MouseAdapter() {
             @Override
