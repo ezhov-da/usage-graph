@@ -4,6 +4,8 @@ import ru.ezhov.graph.gui.domain.GraphObjectGui;
 import ru.ezhov.graph.gui.domain.GraphObjectsGui;
 
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.JTableHeader;
+import java.awt.event.MouseEvent;
 
 class GraphTableModel extends AbstractTableModel {
 

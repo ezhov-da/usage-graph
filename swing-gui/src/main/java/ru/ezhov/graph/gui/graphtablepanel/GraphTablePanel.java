@@ -7,6 +7,7 @@ import ru.ezhov.graph.gui.domain.GraphObjectsGui;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.table.JTableHeader;
 import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.awt.event.*;
@@ -31,7 +32,21 @@ public class GraphTablePanel extends JPanel {
 
         setLayout(new BorderLayout());
         searchPanel = new SearchPanel();
-        table = new JTable();
+        table = new JTable() {
+            //Implement table header tool tips.
+            protected JTableHeader createDefaultTableHeader() {
+                return new JTableHeader(columnModel) {
+                    public String getToolTipText(MouseEvent e) {
+                        String tip = null;
+                        java.awt.Point p = e.getPoint();
+                        int index = columnModel.getColumnIndexAtX(p.x);
+                        int realIndex =
+                                columnModel.getColumn(index).getModelIndex();
+                        return columnModel.getColumn(realIndex).getHeaderValue().toString();
+                    }
+                };
+            }
+        };
         graphTableModel = new GraphTableModel(graphObjectsGui);
         table.setModel(graphTableModel);
         table.setDefaultRenderer(Object.class, new GraphTableRender());
