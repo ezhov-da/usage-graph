@@ -21,7 +21,7 @@ class FileScripts implements AnalyzedObjects {
     private Map<String, List<String>> children = new HashMap<>();
     private Map<String, List<String>> usageScript = new HashMap<>();
 
-    public FileScripts(File root) throws Exception {
+    FileScripts(File root) throws Exception {
         this.root = root;
         long start = System.currentTimeMillis();
         initialScripts(root);

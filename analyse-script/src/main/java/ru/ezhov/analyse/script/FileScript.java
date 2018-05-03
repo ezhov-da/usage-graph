@@ -16,7 +16,7 @@ class FileScript implements AnalyzedObject {
 
     private int rows = -1;
 
-    public FileScript(String id, File file) {
+    FileScript(String id, File file) {
         this.id = id;
         this.file = file;
     }
