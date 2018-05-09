@@ -9,9 +9,9 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>analyse-script</artifactId>
+    <artifactId>analyse-java</artifactId>
 
-    <name>analyse-script</name>
+    <name>analyse-java</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

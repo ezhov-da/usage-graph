@@ -3,7 +3,7 @@ package ru.ezhov.source.analyse.plugin.script;
 import ru.ezhov.analyse.AnalyseException;
 import ru.ezhov.analyse.AnalyzedObjects;
 import ru.ezhov.analyse.NullAnalyzedObjects;
-import ru.ezhov.analyse.script.ScriptsFactory;
+import ru.ezhov.analyse.script.ScriptsAnalyzedObjectsFactory;
 import ru.ezhov.source.analyse.plugin.AbstractSourceAnalysePanel;
 import ru.ezhov.source.analyse.plugin.script.storage.FilePathStore;
 import ru.ezhov.source.analyse.plugin.script.storage.Path;
@@ -91,7 +91,7 @@ public class ScriptFileSourceAnalysePanel extends AbstractSourceAnalysePanel {
             } else {
                 pathStore.path(text);
                 lastUsageComboBoxModel.reload();
-                return ScriptsFactory.fromFile(new File(text));
+                return ScriptsAnalyzedObjectsFactory.fromFile(new File(text));
             }
         } catch (Exception ex) {
             throw new AnalyseException(ex);

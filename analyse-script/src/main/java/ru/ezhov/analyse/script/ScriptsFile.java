@@ -11,9 +11,9 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-class FileScripts implements AnalyzedObjects {
+class ScriptsFile implements AnalyzedObjects {
 
-    private static final Logger LOG = LoggerFactory.getLogger(FileScripts.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ScriptsFile.class);
 
     private File root;
     private Map<String, AnalyzedObject> scripts = new HashMap<>();
@@ -21,7 +21,7 @@ class FileScripts implements AnalyzedObjects {
     private Map<String, List<String>> children = new HashMap<>();
     private Map<String, List<String>> usageScript = new HashMap<>();
 
-    FileScripts(File root) throws Exception {
+    ScriptsFile(File root) throws Exception {
         this.root = root;
         long start = System.currentTimeMillis();
         initialScripts(root);
@@ -43,7 +43,7 @@ class FileScripts implements AnalyzedObjects {
             int index = path.indexOf("scripts");
             try {
                 String id = "/" + path.substring(index, path.length());
-                AnalyzedObject script = new FileScript(id, file);
+                AnalyzedObject script = new ScriptFile(id, file);
                 scripts.put(id, script);
 
                 String text = script.text();

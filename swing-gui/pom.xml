@@ -47,26 +47,30 @@
 
     <profiles>
         <profile>
-        <id>test</id>
-        <properties>
-            <run-file-body>
-                cd /d %~dp0 &amp;&amp; "%JAVA_HOME%\bin\javaw" -cp lib\${analyse-script-swing-plugin};lib\${analyse-script};${parent.artifactId}.jar; -Xmx768m "${main-class}"
-            </run-file-body>
-        </properties>
-    </profile>
+            <id>test</id>
+            <properties>
+                <run-file-body>
+                    cd /d %~dp0 &amp;&amp; "%JAVA_HOME%\bin\javaw" -cp
+                    lib\${analyse-script-swing-plugin};lib\${analyse-script};${parent.artifactId}.jar; -Xmx768m
+                    "${main-class}"
+                </run-file-body>
+            </properties>
+        </profile>
 
         <profile>
             <id>prod</id>
             <properties>
                 <run-file-body>
-                    cd /d %~dp0 &amp;&amp; start "run" "%JAVA_HOME%\bin\javaw" -cp lib\${analyse-script-swing-plugin};lib\${analyse-script};${parent.artifactId}.jar; -Xmx768m "${main-class}"
+                    cd /d %~dp0 &amp;&amp; start "run" "%JAVA_HOME%\bin\javaw" -cp
+                    lib\${analyse-script-swing-plugin};lib\${analyse-script};${parent.artifactId}.jar; -Xmx768m
+                    "${main-class}"
                 </run-file-body>
             </properties>
         </profile>
     </profiles>
 
     <dependencies>
-
+        <!--СТОРОННИЕ БИБЛИОТЕКИ=============================================================-->
         <!-- https://mvnrepository.com/artifact/net.sf.jung/jung-samples -->
         <dependency>
             <groupId>net.sf.jung</groupId>
@@ -74,7 +78,6 @@
             <version>2.0.1</version>
             <scope>provided</scope>
         </dependency>
-
 
         <!-- https://mvnrepository.com/artifact/net.sf.jung/jung-algorithms -->
         <dependency>
@@ -148,7 +151,6 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.11</version>
             <scope>test</scope>
         </dependency>
 
@@ -158,6 +160,8 @@
             <artifactId>rsyntaxtextarea</artifactId>
             <version>2.6.1</version>
         </dependency>
+
+        <!--СОБСТВЕННЫЕ=============================================================-->
         <dependency>
             <groupId>ru.ezhov</groupId>
             <artifactId>analyse-object-interface</artifactId>

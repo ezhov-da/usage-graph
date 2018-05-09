@@ -11,8 +11,10 @@
     <modules>
         <module>analyse-object-interface</module>
         <module>analyse-script</module>
+        <module>analyse-java</module>
         <module>swing-gui-source-analyse-plugin</module>
         <module>swing-gui-source-analyse-plugin-script</module>
+        <module>swing-gui-source-analyse-plugin-java</module>
         <module>swing-gui</module>
     </modules>
 

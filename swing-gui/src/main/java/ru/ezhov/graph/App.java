@@ -22,7 +22,8 @@ public class App {
         }
 
         try {
-            Class aClass = Class.forName("ru.ezhov.source.analyse.plugin.script.ScriptFileSourceAnalysePanel");
+//            Class aClass = Class.forName("ru.ezhov.source.analyse.plugin.script.ScriptFileSourceAnalysePanel");
+            Class aClass = Class.forName("ru.ezhov.source.analyse.plugin.java.JavaFileSourceAnalysePanel");
 
             final AbstractSourceAnalysePanel abstractSourceAnalysePanel = (AbstractSourceAnalysePanel) aClass.newInstance();
 

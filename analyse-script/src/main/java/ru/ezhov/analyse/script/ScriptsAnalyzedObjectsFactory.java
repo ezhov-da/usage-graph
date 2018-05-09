@@ -4,8 +4,8 @@ import ru.ezhov.analyse.AnalyzedObjects;
 
 import java.io.File;
 
-public class ScriptsFactory {
+public class ScriptsAnalyzedObjectsFactory {
     public static AnalyzedObjects fromFile(File root) throws Exception {
-        return new FileScripts(root);
+        return new ScriptsFile(root);
     }
 }
