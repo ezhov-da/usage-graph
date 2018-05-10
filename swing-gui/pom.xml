@@ -29,18 +29,17 @@
 
 		<analyse-java>analyse-java-1.0-SNAPSHOT.jar</analyse-java>
 		<analyse-java-jar-source>../analyse-java/target/${analyse-java}</analyse-java-jar-source>
-		<analyse-java-jar-target>${project.build.directory}/lib/${analyse-java}</analyse-java-jar-target>
-		<!--реализация плагина-->
+		<analyse-java-jar-target>${project.build.directory}/lib/${analyse-java}</analyse-java-jar-target>		<!--реализация плагина-->
 		<analyse-script-swing-plugin>swing-gui-source-analyse-plugin-script-1.0-SNAPSHOT.jar
 		</analyse-script-swing-plugin>
 		<analyse-script-jar-source-swing-plugin>
-			../swing-gui-source-analyse-plugin-script/target/${analyse-script-swing-plugin}
+		../swing-gui-source-analyse-plugin-script/target/${analyse-script-swing-plugin}
 		</analyse-script-jar-source-swing-plugin>
 		<analyse-script-jar-target-swing-plugin>${project.build.directory}/lib/${analyse-script-swing-plugin}
 		</analyse-script-jar-target-swing-plugin>
 
 		<analyse-java-swing-plugin>swing-gui-source-analyse-plugin-java-1.0-SNAPSHOT.jar</analyse-java-swing-plugin>
-		<analyse-java-jar-source-swing-plugin>
+	<analyse-java-jar-source-swing-plugin>
 			../swing-gui-source-analyse-plugin-java/target/${analyse-java-swing-plugin}
 		</analyse-java-jar-source-swing-plugin>
 		<analyse-java-jar-target-swing-plugin>${project.build.directory}/lib/${analyse-java-swing-plugin}
@@ -56,7 +55,7 @@
 			<properties>
 				<run-file-body><![CDATA[
 cd /d %~dp0
-"%JAVA_HOME%\bin\javaw" -cp ^
+"%JAVA_HOME%\bin\java" -cp ^
 lib\${analyse-script-swing-plugin};^
 lib\${analyse-script};^
 lib\${analyse-java-swing-plugin};^
