@@ -2,239 +2,262 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+	<modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <artifactId>usage-graph</artifactId>
-        <groupId>ru.ezhov</groupId>
-        <version>1.0-SNAPSHOT</version>
-    </parent>
+	<parent>
+		<artifactId>usage-graph</artifactId>
+		<groupId>ru.ezhov</groupId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
 
-    <artifactId>swing-gui</artifactId>
-    <version>1.0-SNAPSHOT</version>
+	<artifactId>swing-gui</artifactId>
+	<version>1.0-SNAPSHOT</version>
 
-    <name>swing-gui</name>
+	<name>swing-gui</name>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.7</maven.compiler.source>
-        <maven.compiler.target>1.7</maven.compiler.target>
-        <directory.extended.library>lib</directory.extended.library>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>1.7</maven.compiler.source>
+		<maven.compiler.target>1.7</maven.compiler.target>
+		<directory.extended.library>lib</directory.extended.library>
 
-        <!--настройка копирования зависимостей для работы анализа скрипта-->
-        <!--реализация анализа-->
-        <analyse-script>analyse-script-1.0-SNAPSHOT.jar</analyse-script>
-        <analyse-script-jar-source>
-            ../analyse-script/target/${analyse-script}
-        </analyse-script-jar-source>
-        <analyse-script-jar-target>
-            ${project.build.directory}/lib/${analyse-script}
-        </analyse-script-jar-target>
-        <!--реализация плагина-->
-        <analyse-script-swing-plugin>
-            swing-gui-source-analyse-plugin-script-1.0-SNAPSHOT.jar
-        </analyse-script-swing-plugin>
-        <analyse-script-jar-source-swing-plugin>
-            ../swing-gui-source-analyse-plugin-script/target/${analyse-script-swing-plugin}
-        </analyse-script-jar-source-swing-plugin>
-        <analyse-script-jar-target-swing-plugin>
-            ${project.build.directory}/lib/${analyse-script-swing-plugin}
-        </analyse-script-jar-target-swing-plugin>
+		<!--настройка копирования зависимостей для работы плагинов-->
+		<!--реализация анализа-->
+		<analyse-script>analyse-script-1.0-SNAPSHOT.jar</analyse-script>
+		<analyse-script-jar-source>../analyse-script/target/${analyse-script}</analyse-script-jar-source>
+		<analyse-script-jar-target>${project.build.directory}/lib/${analyse-script}</analyse-script-jar-target>
 
-        <run-file>${project.build.directory}/run.bat</run-file>
-        <main-class>ru.ezhov.graph.App</main-class>
-    </properties>
+		<analyse-java>analyse-java-1.0-SNAPSHOT.jar</analyse-java>
+		<analyse-java-jar-source>../analyse-java/target/${analyse-java}</analyse-java-jar-source>
+		<analyse-java-jar-target>${project.build.directory}/lib/${analyse-java}</analyse-java-jar-target>
+		<!--реализация плагина-->
+		<analyse-script-swing-plugin>swing-gui-source-analyse-plugin-script-1.0-SNAPSHOT.jar
+		</analyse-script-swing-plugin>
+		<analyse-script-jar-source-swing-plugin>
+			../swing-gui-source-analyse-plugin-script/target/${analyse-script-swing-plugin}
+		</analyse-script-jar-source-swing-plugin>
+		<analyse-script-jar-target-swing-plugin>${project.build.directory}/lib/${analyse-script-swing-plugin}
+		</analyse-script-jar-target-swing-plugin>
 
-    <profiles>
-        <profile>
-            <id>test</id>
-            <properties>
-                <run-file-body>
-                    cd /d %~dp0 &amp;&amp; "%JAVA_HOME%\bin\javaw" -cp
-                    lib\${analyse-script-swing-plugin};lib\${analyse-script};${parent.artifactId}.jar; -Xmx768m
-                    "${main-class}"
-                </run-file-body>
-            </properties>
-        </profile>
+		<analyse-java-swing-plugin>swing-gui-source-analyse-plugin-java-1.0-SNAPSHOT.jar</analyse-java-swing-plugin>
+		<analyse-java-jar-source-swing-plugin>
+			../swing-gui-source-analyse-plugin-java/target/${analyse-java-swing-plugin}
+		</analyse-java-jar-source-swing-plugin>
+		<analyse-java-jar-target-swing-plugin>${project.build.directory}/lib/${analyse-java-swing-plugin}
+		</analyse-java-jar-target-swing-plugin>
 
-        <profile>
-            <id>prod</id>
-            <properties>
-                <run-file-body>
-                    cd /d %~dp0 &amp;&amp; start "run" "%JAVA_HOME%\bin\javaw" -cp
-                    lib\${analyse-script-swing-plugin};lib\${analyse-script};${parent.artifactId}.jar; -Xmx768m
-                    "${main-class}"
-                </run-file-body>
-            </properties>
-        </profile>
-    </profiles>
+		<run-file>${project.build.directory}/run.bat</run-file>
+		<main-class>ru.ezhov.graph.App</main-class>
+	</properties>
 
-    <dependencies>
-        <!--СТОРОННИЕ БИБЛИОТЕКИ=============================================================-->
-        <!-- https://mvnrepository.com/artifact/net.sf.jung/jung-samples -->
-        <dependency>
-            <groupId>net.sf.jung</groupId>
-            <artifactId>jung-samples</artifactId>
-            <version>2.0.1</version>
-            <scope>provided</scope>
-        </dependency>
+	<profiles>
+		<profile>
+			<id>dev</id>
+			<properties>
+				<run-file-body><![CDATA[
+cd /d %~dp0
+"%JAVA_HOME%\bin\javaw" -cp ^
+lib\${analyse-script-swing-plugin};^
+lib\${analyse-script};^
+lib\${analyse-java-swing-plugin};^
+lib\${analyse-java};^
+${parent.artifactId}.jar; ^
+-Xmx768m "${main-class}"
+]]>
+				</run-file-body>
+			</properties>
+		</profile>
 
-        <!-- https://mvnrepository.com/artifact/net.sf.jung/jung-algorithms -->
-        <dependency>
-            <groupId>net.sf.jung</groupId>
-            <artifactId>jung-algorithms</artifactId>
-            <version>2.0.1</version>
-        </dependency>
+		<profile>
+			<id>prod</id>
+			<properties>
+				<run-file-body><![CDATA[
+cd /d %~dp0
+start "run" "%JAVA_HOME%\bin\javaw" -cp ^
+lib\${analyse-script-swing-plugin};^
+lib\${analyse-script};^
+lib\${analyse-java-swing-plugin};^
+lib\${analyse-java};^
+${parent.artifactId}.jar; ^
+-Xmx768m "${main-class}"
+]]>
+				</run-file-body>
+			</properties>
+		</profile>
+	</profiles>
 
-        <!-- https://mvnrepository.com/artifact/net.sf.jung/jung-api -->
-        <dependency>
-            <groupId>net.sf.jung</groupId>
-            <artifactId>jung-api</artifactId>
-            <version>2.0.1</version>
-        </dependency>
+	<dependencies>
+		<!--СТОРОННИЕ БИБЛИОТЕКИ=============================================================-->
+		<!-- https://mvnrepository.com/artifact/net.sf.jung/jung-samples -->
+		<dependency>
+			<groupId>net.sf.jung</groupId>
+			<artifactId>jung-samples</artifactId>
+			<version>2.0.1</version>
+			<scope>provided</scope>
+		</dependency>
 
-        <!-- https://mvnrepository.com/artifact/net.sf.jung/jung-graph-impl -->
-        <dependency>
-            <groupId>net.sf.jung</groupId>
-            <artifactId>jung-graph-impl</artifactId>
-            <version>2.0.1</version>
-        </dependency>
+		<!-- https://mvnrepository.com/artifact/net.sf.jung/jung-algorithms -->
+		<dependency>
+			<groupId>net.sf.jung</groupId>
+			<artifactId>jung-algorithms</artifactId>
+			<version>2.0.1</version>
+		</dependency>
 
-        <!-- https://mvnrepository.com/artifact/net.sf.jung/jung-io -->
-        <dependency>
-            <groupId>net.sf.jung</groupId>
-            <artifactId>jung-io</artifactId>
-            <version>2.0.1</version>
-        </dependency>
+		<!-- https://mvnrepository.com/artifact/net.sf.jung/jung-api -->
+		<dependency>
+			<groupId>net.sf.jung</groupId>
+			<artifactId>jung-api</artifactId>
+			<version>2.0.1</version>
+		</dependency>
 
-        <!-- https://mvnrepository.com/artifact/net.sf.jung/jung-visualization -->
-        <dependency>
-            <groupId>net.sf.jung</groupId>
-            <artifactId>jung-visualization</artifactId>
-            <version>2.0.1</version>
-        </dependency>
+		<!-- https://mvnrepository.com/artifact/net.sf.jung/jung-graph-impl -->
+		<dependency>
+			<groupId>net.sf.jung</groupId>
+			<artifactId>jung-graph-impl</artifactId>
+			<version>2.0.1</version>
+		</dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>1.7.25</version>
-        </dependency>
+		<!-- https://mvnrepository.com/artifact/net.sf.jung/jung-io -->
+		<dependency>
+			<groupId>net.sf.jung</groupId>
+			<artifactId>jung-io</artifactId>
+			<version>2.0.1</version>
+		</dependency>
 
-        <!-- https://mvnrepository.com/artifact/ch.qos.logback/logback-classic -->
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>1.2.3</version>
-        </dependency>
+		<!-- https://mvnrepository.com/artifact/net.sf.jung/jung-visualization -->
+		<dependency>
+			<groupId>net.sf.jung</groupId>
+			<artifactId>jung-visualization</artifactId>
+			<version>2.0.1</version>
+		</dependency>
 
-        <!-- https://mvnrepository.com/artifact/com.fifesoft/rsyntaxtextarea -->
-        <dependency>
-            <groupId>com.fifesoft</groupId>
-            <artifactId>rsyntaxtextarea</artifactId>
-            <version>2.6.1</version>
-        </dependency>
+		<!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.25</version>
+		</dependency>
 
-        <!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>24.0-jre</version>
-        </dependency>
+		<!-- https://mvnrepository.com/artifact/ch.qos.logback/logback-classic -->
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>1.2.3</version>
+		</dependency>
 
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>2.8.2</version>
-        </dependency>
+		<!-- https://mvnrepository.com/artifact/com.fifesoft/rsyntaxtextarea -->
+		<dependency>
+			<groupId>com.fifesoft</groupId>
+			<artifactId>rsyntaxtextarea</artifactId>
+			<version>2.6.1</version>
+		</dependency>
 
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
+		<!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>24.0-jre</version>
+		</dependency>
 
-        <!-- https://mvnrepository.com/artifact/com.fifesoft/rsyntaxtextarea -->
-        <dependency>
-            <groupId>com.fifesoft</groupId>
-            <artifactId>rsyntaxtextarea</artifactId>
-            <version>2.6.1</version>
-        </dependency>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.8.2</version>
+		</dependency>
 
-        <!--СОБСТВЕННЫЕ=============================================================-->
-        <dependency>
-            <groupId>ru.ezhov</groupId>
-            <artifactId>analyse-object-interface</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>ru.ezhov</groupId>
-            <artifactId>swing-gui-source-analyse-plugin</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-    </dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
 
-    <build>
-        <finalName>${parent.artifactId}</finalName>
+		<!-- https://mvnrepository.com/artifact/com.fifesoft/rsyntaxtextarea -->
+		<dependency>
+			<groupId>com.fifesoft</groupId>
+			<artifactId>rsyntaxtextarea</artifactId>
+			<version>2.6.1</version>
+		</dependency>
 
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>2.4</version>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <addClasspath>true</addClasspath>
-                            <mainClass>${main-class}</mainClass>
-                            <classpathPrefix>${directory.extended.library}/</classpathPrefix>
-                        </manifest>
-                    </archive>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>2.5.1</version>
-                <executions>
-                    <execution>
-                        <id>copy-dependencies</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>
-                                ${project.build.directory}/${directory.extended.library}/
-                            </outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+		<!--СОБСТВЕННЫЕ=============================================================-->
+		<dependency>
+			<groupId>ru.ezhov</groupId>
+			<artifactId>analyse-object-interface</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>ru.ezhov</groupId>
+			<artifactId>swing-gui-source-analyse-plugin</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+	</dependencies>
 
-            <plugin>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.7</version>
-                <executions>
-                    <execution>
-                        <phase>generate-sources</phase>
-                        <configuration>
-                            <tasks>
-                                <copy file="${analyse-script-jar-source}"
-                                      tofile="${analyse-script-jar-target}"/>
+	<build>
+		<finalName>${parent.artifactId}</finalName>
 
-                                <copy file="${analyse-script-jar-source-swing-plugin}"
-                                      tofile="${analyse-script-jar-target-swing-plugin}"/>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<archive>
+						<manifest>
+							<addClasspath>true</addClasspath>
+							<mainClass>${main-class}</mainClass>
+							<classpathPrefix>${directory.extended.library}/</classpathPrefix>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.5.1</version>
+				<executions>
+					<execution>
+						<id>copy-dependencies</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>
+								${project.build.directory}/${directory.extended.library}/
+							</outputDirectory>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 
-                                <echo file="${run-file}" message="${run-file-body}"/>
-                            </tasks>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.7</version>
+				<executions>
+					<execution>
+						<phase>generate-sources</phase>
+						<configuration>
+							<tasks>
+								<copy file="${analyse-script-jar-source}"
+								      tofile="${analyse-script-jar-target}"/>
+
+								<copy file="${analyse-script-jar-source-swing-plugin}"
+								      tofile="${analyse-script-jar-target-swing-plugin}"/>
+
+								<copy file="${analyse-java-jar-source}"
+								      tofile="${analyse-java-jar-target}"/>
+
+								<copy file="${analyse-java-jar-source-swing-plugin}"
+								      tofile="${analyse-java-jar-target-swing-plugin}"/>
+
+								<echo file="${run-file}" message="${run-file-body}"/>
+							</tasks>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 </project>
