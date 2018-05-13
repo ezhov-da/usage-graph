@@ -10,97 +10,137 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableRowSorter;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Arrays;
 import java.util.List;
 
 public class GraphTablePanel extends JPanel {
 
     private JTable table;
-    private GraphObjectsGui graphObjectsGui;
     private SearchPanel searchPanel;
     private InfoPanel infoPanel;
 
     private List<GraphTableListener> scriptEventList;
 
+    private GraphObjectsGui graphObjectsGui;
     private GraphTableModel graphTableModel;
 
-    public GraphTablePanel(final GraphObjectsGui graphObjectsGui, GraphTableListener... graphTableListeners) {
-        this.graphObjectsGui = graphObjectsGui;
+    private JToolBar toolBar = new JToolBar(JToolBar.VERTICAL);
 
+
+    public GraphTablePanel(final Component parent, final GraphObjectsGui graphObjectsGui, GraphTableListener... graphTableListeners) {
+        setLayout(new BorderLayout());
+        this.graphObjectsGui = graphObjectsGui;
         scriptEventList = Arrays.asList(graphTableListeners);
 
-        setLayout(new BorderLayout());
-        searchPanel = new SearchPanel();
-        table = new JTable() {
-            //Implement table header tool tips.
-            protected JTableHeader createDefaultTableHeader() {
-                return new JTableHeader(columnModel) {
-                    public String getToolTipText(MouseEvent e) {
-                        String tip = null;
-                        java.awt.Point p = e.getPoint();
-                        int index = columnModel.getColumnIndexAtX(p.x);
-                        int realIndex =
-                                columnModel.getColumn(index).getModelIndex();
-                        return columnModel.getColumn(realIndex).getHeaderValue().toString();
-                    }
-                };
-            }
-        };
-        graphTableModel = new GraphTableModel(graphObjectsGui);
-        table.setModel(graphTableModel);
-        table.setDefaultRenderer(Object.class, new GraphTableRender());
-        table.setRowSorter(new GraphTableRowSorter(graphTableModel));
-        table.getColumn(table.getColumnName(0)).setPreferredWidth(400);
-        table.getColumn(table.getColumnName(0)).setMaxWidth(400);
-        table.getColumn(table.getColumnName(1)).setPreferredWidth(30);
-        table.getColumn(table.getColumnName(2)).setPreferredWidth(30);
-        table.getColumn(table.getColumnName(3)).setPreferredWidth(30);
-        table.getColumn(table.getColumnName(4)).setPreferredWidth(30);
+        final TablePanel tablePanel = new TablePanel();
 
-        infoPanel = new InfoPanel();
-        add(searchPanel, BorderLayout.NORTH);
-        add(new JScrollPane(table), BorderLayout.CENTER);
-        add(infoPanel, BorderLayout.SOUTH);
-
-        table.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                int selectedRow = table.getSelectedRow();
-                if (selectedRow != -1) {
-                    int row = table.convertRowIndexToModel(selectedRow);
-                    GraphObjectGui script = graphObjectsGui.all().get(row);
-                    fireEventListener(EventType.MOUSE_RELEASED, e, script);
-                }
+        toolBar.setFloatable(false);
+        toolBar.add(new AbstractAction() {
+            {
+                putValue(AbstractAction.NAME, "<html>С<br>к<br>р<br>ы<br>т<br>ь<br> <br>т<br>а<br>б<br>л<br>и<br>ц<br>у");
             }
 
+            private boolean hide = false;
             @Override
-            public void mouseClicked(MouseEvent e) {
-                int selectedRow = table.getSelectedRow();
-                if (selectedRow != -1) {
-                    int row = table.convertRowIndexToModel(selectedRow);
-                    GraphObjectGui script = graphObjectsGui.all().get(row);
-                    fireEventListener(EventType.MOUSE_CLICKED, e, script);
+            public void actionPerformed(ActionEvent e) {
+                if (hide) {
+                    putValue(AbstractAction.NAME, "<html>С<br>к<br>р<br>ы<br>т<br>ь<br> <br>т<br>а<br>б<br>л<br>и<br>ц<br>у");
+                    GraphTablePanel.this.add(tablePanel, BorderLayout.CENTER);
+                } else {
+                    putValue(AbstractAction.NAME, "<html>О<br>т<br>о<br>б<br>р<br>а<br>з<br>и<br>т<br>ь<br> <br>т<br>а<br>б<br>л<br>и<br>ц<br>у");
+                    GraphTablePanel.this.remove(tablePanel);
                 }
+                hide = !hide;
+                GraphTablePanel.this.revalidate();
+                GraphTablePanel.this.repaint();
+                fireEventListener(EventType.HIDE_SHOW_TABLE_PANEL, null, null);
             }
         });
 
-        table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                int selectedRow = table.getSelectedRow();
-                if (selectedRow != -1) {
-                    int row = table.convertRowIndexToModel(selectedRow);
-                    GraphObjectGui script = graphObjectsGui.all().get(row);
-                    fireEventListener(EventType.LIST_SELECTION_EVENT, e, script);
-                }
-            }
-        });
+        add(toolBar, BorderLayout.WEST);
+        add(tablePanel, BorderLayout.CENTER);
     }
 
     private void fireEventListener(EventType eventType, Object e, GraphObjectGui script) {
         for (GraphTableListener graphTableListener : scriptEventList) {
             graphTableListener.event(eventType, e, script);
+        }
+    }
+
+    private class TablePanel extends JPanel {
+        public TablePanel() {
+            setLayout(new BorderLayout());
+            searchPanel = new SearchPanel();
+            table = new JTable() {
+                //Implement table header tool tips.
+                protected JTableHeader createDefaultTableHeader() {
+                    return new JTableHeader(columnModel) {
+                        public String getToolTipText(MouseEvent e) {
+                            String tip = null;
+                            java.awt.Point p = e.getPoint();
+                            int index = columnModel.getColumnIndexAtX(p.x);
+                            int realIndex =
+                                    columnModel.getColumn(index).getModelIndex();
+                            return columnModel.getColumn(realIndex).getHeaderValue().toString();
+                        }
+                    };
+                }
+            };
+            graphTableModel = new GraphTableModel(graphObjectsGui);
+            table.setModel(graphTableModel);
+            table.setDefaultRenderer(Object.class, new GraphTableRender());
+            table.setRowSorter(new GraphTableRowSorter(graphTableModel));
+            table.getColumn(table.getColumnName(0)).setPreferredWidth(400);
+            table.getColumn(table.getColumnName(0)).setMaxWidth(400);
+            table.getColumn(table.getColumnName(1)).setPreferredWidth(30);
+            table.getColumn(table.getColumnName(2)).setPreferredWidth(30);
+            table.getColumn(table.getColumnName(3)).setPreferredWidth(30);
+            table.getColumn(table.getColumnName(4)).setPreferredWidth(30);
+
+            infoPanel = new InfoPanel();
+            add(searchPanel, BorderLayout.NORTH);
+            add(new JScrollPane(table), BorderLayout.CENTER);
+            add(infoPanel, BorderLayout.SOUTH);
+
+            table.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                    int selectedRow = table.getSelectedRow();
+                    if (selectedRow != -1) {
+                        int row = table.convertRowIndexToModel(selectedRow);
+                        GraphObjectGui script = graphObjectsGui.all().get(row);
+                        fireEventListener(EventType.MOUSE_RELEASED, e, script);
+                    }
+                }
+
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    int selectedRow = table.getSelectedRow();
+                    if (selectedRow != -1) {
+                        int row = table.convertRowIndexToModel(selectedRow);
+                        GraphObjectGui script = graphObjectsGui.all().get(row);
+                        fireEventListener(EventType.MOUSE_CLICKED, e, script);
+                    }
+                }
+            });
+
+            table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+                @Override
+                public void valueChanged(ListSelectionEvent e) {
+                    int selectedRow = table.getSelectedRow();
+                    if (selectedRow != -1) {
+                        int row = table.convertRowIndexToModel(selectedRow);
+                        GraphObjectGui script = graphObjectsGui.all().get(row);
+                        fireEventListener(EventType.LIST_SELECTION_EVENT, e, script);
+                    }
+                }
+            });
         }
     }
 

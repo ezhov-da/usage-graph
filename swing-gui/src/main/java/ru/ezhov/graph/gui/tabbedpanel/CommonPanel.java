@@ -35,7 +35,8 @@ public class CommonPanel extends JPanel {
     private void init() {
         setLayout(new BorderLayout());
         graphPanel = new GraphPanel(graphObjectsGui);
-        graphTablePanel = new GraphTablePanel(graphObjectsGui, new GraphTableListener() {
+        final JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+        graphTablePanel = new GraphTablePanel(splitPane, graphObjectsGui, new GraphTableListener() {
             @Override
             public void event(EventType eventType, Object event, final GraphObjectGui graphObjectGui) {
                 switch (eventType) {
@@ -79,13 +80,13 @@ public class CommonPanel extends JPanel {
                             });
                         }
                         break;
+                    case HIDE_SHOW_TABLE_PANEL:
+                        splitPane.resetToPreferredSizes();
+                        break;
                 }
             }
         });
 
-        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-        splitPane.setDividerLocation(0.4);
-        splitPane.setResizeWeight(0.4);
         splitPane.setLeftComponent(graphTablePanel);
         tabbedPane.addTab("ГРАФ", graphPanel);
         tabbedPane.setTabComponentAt(0, new TabHeader("ГРАФ", tabbedPane, false));

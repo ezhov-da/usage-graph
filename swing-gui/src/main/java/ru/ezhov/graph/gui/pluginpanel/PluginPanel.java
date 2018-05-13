@@ -21,13 +21,19 @@ public class PluginPanel extends AbstractSourceAnalysePanel {
             }
     );
 
-    private Map<String, AbstractSourceAnalysePanel> mapLoader = new HashMap<>();
+    private Map<String, AbstractSourceAnalysePanel> mapLoadPlugins = new HashMap<>();
     private Component componentCenterStub = new JLabel("Загрузите плагин");
-    private Component componentCenter = new JLabel("Загрузите плагин");
+    private Component componentCenter;
+
+    private JPanel pluginPanel = new JPanel(new BorderLayout());
+
+    private JToggleButton buttonHide = new JToggleButton("Скрыть панель плагина");
+
+    private boolean alreadyAddButtonHideShowPluginPanel = false;
 
     public PluginPanel() {
         setLayout(new BorderLayout());
-        JPanel panelSelect = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        final JPanel panelSelect = new JPanel(new FlowLayout(FlowLayout.LEFT));
         panelSelect.add(new JLabel("Выберите плагин для построения графа"));
         JButton buttonSelect = new JButton("Загрузить");
         buttonSelect.addActionListener(new ActionListener() {
@@ -42,14 +48,19 @@ public class PluginPanel extends AbstractSourceAnalysePanel {
                             JOptionPane.INFORMATION_MESSAGE
                     );
                 } else {
-                    PluginPanel.this.remove(componentCenter);
-                    if (mapLoader.containsKey(s)) {
-                        componentCenter = mapLoader.get(s);
+                    if (!alreadyAddButtonHideShowPluginPanel) {
+                        alreadyAddButtonHideShowPluginPanel = true;
+                        panelSelect.add(buttonHide);
+                    }
+
+                    PluginPanel.this.pluginPanel.remove(componentCenter);
+                    if (mapLoadPlugins.containsKey(s)) {
+                        componentCenter = mapLoadPlugins.get(s);
                     } else {
                         try {
                             AbstractSourceAnalysePanel abstractSourceAnalysePanel = (AbstractSourceAnalysePanel) Class.forName(s).newInstance();
                             componentCenter = abstractSourceAnalysePanel;
-                            mapLoader.put(s, abstractSourceAnalysePanel);
+                            mapLoadPlugins.put(s, abstractSourceAnalysePanel);
                         } catch (Exception e1) {
                             JOptionPane.showMessageDialog(
                                     null,
@@ -57,23 +68,38 @@ public class PluginPanel extends AbstractSourceAnalysePanel {
                                     "Выбор плагина",
                                     JOptionPane.INFORMATION_MESSAGE
                             );
-                            PluginPanel.this.add(componentCenter, BorderLayout.CENTER);
-                            PluginPanel.this.revalidate();
-                            PluginPanel.this.repaint();
+                            PluginPanel.this.pluginPanel.add(componentCenter, BorderLayout.CENTER);
+                            PluginPanel.this.pluginPanel.revalidate();
+                            PluginPanel.this.pluginPanel.repaint();
                             return;
                         }
                     }
-                    PluginPanel.this.add(componentCenter, BorderLayout.CENTER);
-                    PluginPanel.this.revalidate();
-                    PluginPanel.this.repaint();
+                    PluginPanel.this.pluginPanel.add(componentCenter, BorderLayout.CENTER);
+                    PluginPanel.this.pluginPanel.revalidate();
+                    PluginPanel.this.pluginPanel.repaint();
                 }
             }
         });
+
+        buttonHide.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (buttonHide.isSelected()) {
+                    buttonHide.setText("Отобразить панель плагина");
+                    remove(pluginPanel);
+                } else {
+                    buttonHide.setText("Скрыть панель плагина");
+                    add(pluginPanel, BorderLayout.CENTER);
+                }
+            }
+        });
+
         panelSelect.add(comboBox);
         panelSelect.add(buttonSelect);
         add(panelSelect, BorderLayout.NORTH);
         componentCenter = componentCenterStub;
-        add(componentCenter, BorderLayout.CENTER);
+        pluginPanel.add(componentCenter, BorderLayout.CENTER);
+        add(pluginPanel, BorderLayout.CENTER);
     }
 
     @Override

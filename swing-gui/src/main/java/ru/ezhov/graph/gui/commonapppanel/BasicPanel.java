@@ -34,31 +34,8 @@ public class BasicPanel extends JPanel {
         labelStub.setHorizontalAlignment(SwingConstants.CENTER);
         panelStub.add(labelStub, BorderLayout.CENTER);
         panelCenter = panelStub;
-        buttonLoad = new JButton("Анализировать");
-        buttonLoad.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    AnalyseThread worker = new AnalyseThread();
-                    worker.execute();
-                } catch (Exception e1) {
-                    LOG.error("Ошибка загрузки данных для анализа", e1);
-                    JOptionPane.showMessageDialog(
-                            BasicPanel.this,
-                            "Ошибка загрузки данных для анализа",
-                            "Ошибка загрузки",
-                            JOptionPane.INFORMATION_MESSAGE
-                    );
-                }
-            }
-        });
 
-        JPanel panelSource = new JPanel(new BorderLayout());
-        panelSource.setBorder(BorderFactory.createTitledBorder("Источник анализа"));
-        panelSource.add(abstractSourceAnalysePanel, BorderLayout.CENTER);
-        JPanel panelButtonLoad = new JPanel();
-        panelButtonLoad.add(buttonLoad);
-        panelSource.add(panelButtonLoad, BorderLayout.SOUTH);
+        JPanel panelSource = new SourcePanel();
 
         add(panelSource, BorderLayout.NORTH);
         add(panelCenter, BorderLayout.CENTER);
@@ -66,6 +43,35 @@ public class BasicPanel extends JPanel {
 
     private AnalyzedObjects load() throws Exception {
         return abstractSourceAnalysePanel.analyse();
+    }
+
+    private class SourcePanel extends JPanel {
+        SourcePanel() {
+            setLayout(new BorderLayout());
+            setBorder(BorderFactory.createTitledBorder("Источник анализа"));
+            add(abstractSourceAnalysePanel, BorderLayout.CENTER);
+            JPanel panelButtonLoad = new JPanel();
+            buttonLoad = new JButton("Анализировать");
+            panelButtonLoad.add(buttonLoad);
+            buttonLoad.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    try {
+                        AnalyseThread worker = new AnalyseThread();
+                        worker.execute();
+                    } catch (Exception e1) {
+                        LOG.error("Ошибка загрузки данных для анализа", e1);
+                        JOptionPane.showMessageDialog(
+                                BasicPanel.this,
+                                "Ошибка загрузки данных для анализа",
+                                "Ошибка загрузки",
+                                JOptionPane.INFORMATION_MESSAGE
+                        );
+                    }
+                }
+            });
+            add(panelButtonLoad, BorderLayout.SOUTH);
+        }
     }
 
 

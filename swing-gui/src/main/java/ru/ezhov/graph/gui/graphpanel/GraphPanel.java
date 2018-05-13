@@ -86,7 +86,7 @@ public class GraphPanel extends JPanel implements ActionListener {
     private Transformer<String, String> es_none;
     private VertexFontTransformer<String> vff;
     private EdgeFontTransformer<String> eff;
-    private VertexShapeSizeAspect<String, String> vssa;
+//    private VertexShapeSizeAspect<String, String> vssa;
     private DirectionDisplayPredicate<String, String> show_edge;
     private DirectionDisplayPredicate<String, String> show_arrow;
     private VertexDisplayPredicate<String, String> show_vertex;
@@ -94,7 +94,7 @@ public class GraphPanel extends JPanel implements ActionListener {
     private GradientPickedEdgePaintFunction<String, String> edgeDrawPaint;
     private GradientPickedEdgePaintFunction<String, String> edgeFillPaint;
     private Map<String, Number> edge_weight = new HashMap<String, Number>();
-    private Transformer<String, Double> voltages;
+//    private Transformer<String, Double> voltages;
     private Map<String, Double> transparency = new HashMap<String, Double>();
     private VisualizationViewer<String, String> vv;
     private DefaultModalGraphMouse<String, String> gm;
@@ -128,7 +128,7 @@ public class GraphPanel extends JPanel implements ActionListener {
         eff = new EdgeFontTransformer<String>();
         vs_none = new ConstantTransformer(null);
         es_none = new ConstantTransformer(null);
-        vssa = new VertexShapeSizeAspect<String, String>(g, voltages);
+//        vssa = new VertexShapeSizeAspect<String, String>(g, voltages);
         show_edge = new DirectionDisplayPredicate<String, String>(true, true);
         show_arrow = new DirectionDisplayPredicate<String, String>(true, false);
         show_vertex = new VertexDisplayPredicate<String, String>(false);
@@ -148,7 +148,7 @@ public class GraphPanel extends JPanel implements ActionListener {
         vv.getRenderContext().setVertexStrokeTransformer(vsh);
 //        vv.getRenderContext().setVertexLabelTransformer(new ToStringLabeller<String>());
         vv.getRenderContext().setVertexFontTransformer(vff);
-        vv.getRenderContext().setVertexShapeTransformer(vssa);
+//        vv.getRenderContext().setVertexShapeTransformer(vssa);
         vv.getRenderContext().setVertexIncludePredicate(show_vertex);
 
         vv.getRenderContext().setEdgeDrawPaintTransformer(edgeDrawPaint);
@@ -175,7 +175,7 @@ public class GraphPanel extends JPanel implements ActionListener {
         addBottomControls(jp);
 //        vssa.setScaling(true);
 
-        vv.setVertexToolTipTransformer(new VoltageTips<String>());
+//        vv.setVertexToolTipTransformer(new VoltageTips<String>());
         vv.setToolTipText("<html><center>Используйте колесико мыши для увеличения<p>Нажмите и перетащите мышь для панорамирования<p>Shift-click и Drag для вращения</center></html>");
 
         return jp;
@@ -204,22 +204,22 @@ public class GraphPanel extends JPanel implements ActionListener {
                 g.addEdge(parent.id() + "Использует " + script.id(), parent.id(), script.id(), EdgeType.DIRECTED);
             }
 
-            if (!script.children().isEmpty()) {
-                seedVertices.add(script.id());
-                sources.add(script.id());
-            } else if (!script.parents().isEmpty()) {
-                sinks.add(script.id());
-            }
+//            if (!script.children().isEmpty()) {
+//                seedVertices.add(script.id());
+//                sources.add(script.id());
+//            } else if (!script.parents().isEmpty()) {
+//                sinks.add(script.id());
+//            }
         }
 
-        if (seedVertices.size() < 2) {
-            LOG.error("need at least 2 seeds (one source, one sink)");
-        }
-
-        VoltageScorer<String, String> voltage_scores =
-                new VoltageScorer<String, String>(g, MapTransformer.getInstance(edge_weight), sources, sinks);
-        voltage_scores.evaluate();
-        voltages = new VertexScoreTransformer<String, Double>(voltage_scores);
+//        if (seedVertices.size() < 2) {
+//            LOG.error("need at least 2 seeds (one source, one sink)");
+//        }
+//
+//        VoltageScorer<String, String> voltage_scores =
+//                new VoltageScorer<String, String>(g, MapTransformer.getInstance(edge_weight), sources, sinks);
+//        voltage_scores.evaluate();
+//        voltages = new VertexScoreTransformer<String, Double>(voltage_scores);
 
         Collection<String> verts = g.getVertices();
 
@@ -529,12 +529,12 @@ public class GraphPanel extends JPanel implements ActionListener {
         } else if (source == font) {
             vff.setBold(source.isSelected());
             eff.setBold(source.isSelected());
-        } else if (source == v_shape) {
-            vssa.useFunnyShapes(source.isSelected());
-        } else if (source == v_size) {
-            vssa.setScaling(source.isSelected());
-        } else if (source == v_aspect) {
-            vssa.setStretching(source.isSelected());
+//        } else if (source == v_shape) {
+//            vssa.useFunnyShapes(source.isSelected());
+//        } else if (source == v_size) {
+//            vssa.setScaling(source.isSelected());
+//        } else if (source == v_aspect) {
+//            vssa.setStretching(source.isSelected());
         } else if (source == e_line) {
             if (source.isSelected()) {
                 vv.getRenderContext().setEdgeShapeTransformer(new EdgeShape.Line<String, String>());
@@ -944,13 +944,13 @@ public class GraphPanel extends JPanel implements ActionListener {
         }
     }
 
-    public class VoltageTips<E>
-            implements Transformer<String, String> {
-
-        public String transform(String vertex) {
-            return "Уровень устойчивости: " + voltages.transform(vertex);
-        }
-    }
+//    public class VoltageTips<E>
+//            implements Transformer<String, String> {
+//
+//        public String transform(String vertex) {
+//            return "Уровень устойчивости: " + voltages.transform(vertex);
+//        }
+//    }
 
     public class GradientPickedEdgePaintFunction<V, E> extends GradientEdgePaintTransformer<V, E> {
         protected boolean fill_edge = false;
