@@ -2,64 +2,54 @@ package ru.ezhov.analyse.util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.ezhov.analyse.java.SrcRootFolder;
 
 import java.io.File;
 import java.io.FileFilter;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveTask;
 
 public class FoldersByName {
     private static final Logger LOG = LoggerFactory.getLogger(FoldersByName.class);
-    private String name;
-    private File[] rootFolders;
+    private SearchFolders searchFolders;
 
-    public FoldersByName(String name, File... rootFolders) {
-        if (rootFolders.length == 0) {
+    public FoldersByName(SearchFolders searchFolders) {
+        if (searchFolders.all().isEmpty()) {
             throw new IllegalArgumentException("Обязательно должна быть указана папка для поиска");
         }
-        for (File file : rootFolders) {
-            if (!file.isDirectory()) {
-                throw new IllegalArgumentException("[ " + file.getAbsolutePath() + "] не папка. Поиск осуществляется только в папке");
-            }
-        }
-        if (name == null || "".equals(name)) {
-            throw new IllegalArgumentException("Имя не может быть null или пусто");
-        }
-        this.name = name;
-        this.rootFolders = rootFolders;
+        this.searchFolders = searchFolders;
     }
 
-    public Folders folders() {
-        List<File> files = new ForkJoinPool().invoke(new RootFiles(name, rootFolders));
-        LOG.info("Найдено [{}] папок с именем [{}]", files.size(), name);
-        return new Folders(new HashSet<File>(files));
+    public List<SrcRootFolder> folders() {
+        List<SrcRootFolder> files = new ForkJoinPool().invoke(new RootFiles(searchFolders));
+        LOG.info("Найдено [{}] папок", files.size());
+        return files;
     }
 
+    private class RootFiles extends RecursiveTask<List<SrcRootFolder>> {
 
-    private class RootFiles extends RecursiveTask<List<File>> {
+        private SearchFolders searchFolders;
 
-        private File[] rootFolders;
-        private String nameFolder;
-
-        RootFiles(String nameFolder, File... rootFolders) {
-            this.rootFolders = rootFolders;
-            this.nameFolder = nameFolder;
+        RootFiles(SearchFolders searchFolders) {
+            this.searchFolders = searchFolders;
         }
 
         @Override
-        protected List<File> compute() {
+        protected List<SrcRootFolder> compute() {
             List<RecursiveFile> recursiveFiles = new ArrayList<>();
-            for (File file : rootFolders) {
-                RecursiveFile recursiveFile = new RecursiveFile(file, nameFolder);
+            for (SearchFolder searchFolder : searchFolders.all()) {
+                RecursiveFile recursiveFile = new RecursiveFile(searchFolder.root(), searchFolder.findSrcFolderName());
                 recursiveFile.fork();
                 recursiveFiles.add(recursiveFile);
             }
-            List<File> fileList = new ArrayList<>();
+            List<SrcRootFolder> fileList = new ArrayList<>();
             for (RecursiveFile recursiveFile : recursiveFiles) {
-                fileList.addAll(recursiveFile.join());
+                List<File> files = recursiveFile.join();
+                for (File file : files) {
+                    fileList.add(new SrcRootFolder(file));
+                }
             }
             return fileList;
         }
@@ -83,7 +73,7 @@ public class FoldersByName {
             File[] files = root.listFiles(new DirectoryFilter());
             if (files != null) {
                 for (File file : files) {
-                    if (file.isDirectory() && name.equals(file.getName())) {
+                    if (file.isDirectory() && nameFolder.equals(file.getName())) {
                         LOG.debug("Найдена папка: {}", file.getAbsolutePath());
                         findFolders.add(file);
                     }

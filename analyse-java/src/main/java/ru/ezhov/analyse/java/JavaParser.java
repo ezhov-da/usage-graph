@@ -3,7 +3,6 @@ package ru.ezhov.analyse.java;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.ezhov.analyse.AnalyzedObjects;
-import ru.ezhov.analyse.util.Folders;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -21,20 +20,18 @@ class JavaParser {
     private static Pattern patternClass = Pattern.compile("(?<=class\\s)(\\w+\\.?)+");
     private static Pattern patternWord = Pattern.compile("(?<=\\t)\\w+|(?<=\\()\\w+|(?<= )\\w+");
 
-    private Folders folders;
+    private List<SrcRootFolder> srcRootFolders;
 
-    public JavaParser(Folders folders) {
-        this.folders = folders;
+    JavaParser(List<SrcRootFolder> srcRootFolders) {
+        this.srcRootFolders = srcRootFolders;
     }
 
-    public AnalyzedObjects parse() {
-        Set<File> files = folders.all();
+    AnalyzedObjects parse() {
         List<JavaFile> javaFiles = new ArrayList<>();
         Map<String, Set<JavaFile>> mapWords = new HashMap<>();
-        for (File file : files) {
-            recursiveJavaFileAndContainsWord(file, javaFiles, mapWords);
+        for (SrcRootFolder file : srcRootFolders) {
+            recursiveJavaFileAndContainsWord(file.folder(), javaFiles, mapWords);
         }
-
 
         AnalyzedObjects analyzedObjects = buildAnalyzedObjects(javaFiles, mapWords);
 //        try {
@@ -45,8 +42,8 @@ class JavaParser {
         return analyzedObjects;
     }
 
-    private void recursiveJavaFileAndContainsWord(File file, List<JavaFile> fillJavaFiles, Map<String, Set<JavaFile>> fillContainsWord) {
-        File[] files = file.listFiles(new FileFilter() {
+    private void recursiveJavaFileAndContainsWord(File srcRootFolder, List<JavaFile> fillJavaFiles, Map<String, Set<JavaFile>> fillContainsWord) {
+        File[] files = srcRootFolder.listFiles(new FileFilter() {
             @Override
             public boolean accept(File pathname) {
                 return pathname.getName().endsWith(".java") || pathname.isDirectory();
