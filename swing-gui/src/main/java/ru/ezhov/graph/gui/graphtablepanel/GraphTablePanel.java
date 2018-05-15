@@ -3,6 +3,7 @@ package ru.ezhov.graph.gui.graphtablepanel;
 import ru.ezhov.graph.gui.components.JTextFieldWithText;
 import ru.ezhov.graph.gui.domain.GraphObjectGui;
 import ru.ezhov.graph.gui.domain.GraphObjectsGui;
+import ru.ezhov.graph.gui.pluginpanel.PluginPanel;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -43,17 +44,21 @@ public class GraphTablePanel extends JPanel {
         toolBar.setFloatable(false);
         toolBar.add(new AbstractAction() {
             {
-                putValue(AbstractAction.NAME, "<html>С<br>к<br>р<br>ы<br>т<br>ь<br> <br>т<br>а<br>б<br>л<br>и<br>ц<br>у");
+                putValue(AbstractAction.NAME, "Скрыть таблицу");
+                putValue(AbstractAction.SMALL_ICON, new ImageIcon(PluginPanel.class.getResource("/hide_16x16.png")));
             }
 
             private boolean hide = false;
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (hide) {
-                    putValue(AbstractAction.NAME, "<html>С<br>к<br>р<br>ы<br>т<br>ь<br> <br>т<br>а<br>б<br>л<br>и<br>ц<br>у");
+                    putValue(AbstractAction.SHORT_DESCRIPTION, "Скрыть таблицу");
+                    putValue(AbstractAction.SMALL_ICON, new ImageIcon(GraphTablePanel.class.getResource("/hide_16x16.png")));
                     GraphTablePanel.this.add(tablePanel, BorderLayout.CENTER);
                 } else {
-                    putValue(AbstractAction.NAME, "<html>О<br>т<br>о<br>б<br>р<br>а<br>з<br>и<br>т<br>ь<br> <br>т<br>а<br>б<br>л<br>и<br>ц<br>у");
+                    putValue(AbstractAction.SHORT_DESCRIPTION, "Отобразить таблицу");
+                    putValue(AbstractAction.SMALL_ICON, new ImageIcon(GraphTablePanel.class.getResource("/show_16x16.png")));
                     GraphTablePanel.this.remove(tablePanel);
                 }
                 hide = !hide;

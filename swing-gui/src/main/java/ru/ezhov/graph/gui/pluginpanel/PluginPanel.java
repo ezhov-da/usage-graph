@@ -27,11 +27,12 @@ public class PluginPanel extends AbstractSourceAnalysePanel {
 
     private JPanel pluginPanel = new JPanel(new BorderLayout());
 
-    private JToggleButton buttonHide = new JToggleButton("Скрыть панель плагина");
+    private JToggleButton buttonHide = new JToggleButton(new ImageIcon(PluginPanel.class.getResource("/hide_16x16.png")));
 
     private boolean alreadyAddButtonHideShowPluginPanel = false;
 
     public PluginPanel() {
+        buttonHide.setToolTipText("Скрыть панель плагина");
         setLayout(new BorderLayout());
         final JPanel panelSelect = new JPanel(new FlowLayout(FlowLayout.LEFT));
         panelSelect.add(new JLabel("Выберите плагин для построения графа"));
@@ -85,12 +86,15 @@ public class PluginPanel extends AbstractSourceAnalysePanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (buttonHide.isSelected()) {
-                    buttonHide.setText("Отобразить панель плагина");
+                    buttonHide.setToolTipText("Отобразить панель плагина");
+                    buttonHide.setIcon(new ImageIcon(PluginPanel.class.getResource("/show_16x16.png")));
                     remove(pluginPanel);
                 } else {
-                    buttonHide.setText("Скрыть панель плагина");
+                    buttonHide.setToolTipText("Скрыть панель плагина");
+                    buttonHide.setIcon(new ImageIcon(PluginPanel.class.getResource("/hide_16x16.png")));
                     add(pluginPanel, BorderLayout.CENTER);
                 }
+                revalidate();
             }
         });
 

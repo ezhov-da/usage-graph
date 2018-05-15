@@ -119,8 +119,8 @@ public class JavaFileSourceAnalysePanel extends AbstractSourceAnalysePanel {
             table.setAutoCreateColumnsFromModel(false);
             table.setTableHeader(null);
             table.getColumn(table.getColumnName(1)).setMaxWidth(50);
-            table.getColumn(table.getColumnName(2)).setMaxWidth(50);
-            table.getColumn(table.getColumnName(2)).setCellRenderer(new ButtonRenderer("x"));
+            table.getColumn(table.getColumnName(2)).setMaxWidth(16);
+            table.getColumn(table.getColumnName(2)).setCellRenderer(new ButtonRenderer());
 
             table.addMouseListener(new MouseAdapter() {
                 @Override
@@ -221,9 +221,14 @@ public class JavaFileSourceAnalysePanel extends AbstractSourceAnalysePanel {
 
     class ButtonRenderer extends JButton implements TableCellRenderer {
 
-        ButtonRenderer(String text) {
-            setText(text);
+        ButtonRenderer() {
+            setIcon(new ImageIcon(JavaFileSourceAnalysePanel.class.getResource("/delete_10x10.png")));
             setOpaque(true);
+        }
+
+        ButtonRenderer(String text) {
+            super();
+            setText(text);
         }
 
         public Component getTableCellRendererComponent(JTable table, Object value,
