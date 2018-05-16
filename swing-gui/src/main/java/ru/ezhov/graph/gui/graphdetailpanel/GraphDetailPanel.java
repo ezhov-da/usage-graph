@@ -91,7 +91,7 @@ public class GraphDetailPanel extends JPanel implements ActionListener {
     private GradientPickedEdgePaintFunction<String, String> edgeDrawPaint;
     private GradientPickedEdgePaintFunction<String, String> edgeFillPaint;
     private Map<String, Number> edge_weight = new HashMap<String, Number>();
-    private Transformer<String, Double> voltages;
+//    private Transformer<String, Double> voltages;
     private Map<String, Double> transparency = new HashMap<String, Double>();
     private VisualizationViewer<String, String> vv;
     private DefaultModalGraphMouse<String, String> gm;
@@ -125,7 +125,7 @@ public class GraphDetailPanel extends JPanel implements ActionListener {
         eff = new EdgeFontTransformer<String>();
         vs_none = new ConstantTransformer(null);
         es_none = new ConstantTransformer(null);
-        vssa = new VertexShapeSizeAspect<String, String>(g, voltages);
+//        vssa = new VertexShapeSizeAspect<String, String>(g, voltages);
         show_edge = new DirectionDisplayPredicate<String, String>(true, true);
         show_arrow = new DirectionDisplayPredicate<String, String>(true, false);
         show_vertex = new VertexDisplayPredicate<String, String>(false);
@@ -172,7 +172,7 @@ public class GraphDetailPanel extends JPanel implements ActionListener {
         addBottomControls(jp);
 //        vssa.setScaling(true);
 
-        vv.setVertexToolTipTransformer(new VoltageTips<String>());
+//        vv.setVertexToolTipTransformer(new VoltageTips<String>());
         vv.setToolTipText("<html><center>Используйте колесико мыши для увеличения<p>Нажмите и перетащите мышь для панорамирования<p>Shift-click и Drag для вращения</center></html>");
 
         return jp;
@@ -210,10 +210,10 @@ public class GraphDetailPanel extends JPanel implements ActionListener {
             LOG.error("need at least 2 seeds (one source, one sink)");
         }
 
-        VoltageScorer<String, String> voltage_scores =
-                new VoltageScorer<String, String>(g, MapTransformer.getInstance(edge_weight), sources, sinks);
-        voltage_scores.evaluate();
-        voltages = new VertexScoreTransformer<String, Double>(voltage_scores);
+//        VoltageScorer<String, String> voltage_scores =
+//                new VoltageScorer<String, String>(g, MapTransformer.getInstance(edge_weight), sources, sinks);
+//        voltage_scores.evaluate();
+//        voltages = new VertexScoreTransformer<String, Double>(voltage_scores);
 
         Collection<String> verts = g.getVertices();
 
@@ -927,13 +927,13 @@ public class GraphDetailPanel extends JPanel implements ActionListener {
         }
     }
 
-    public class VoltageTips<E>
-            implements Transformer<String, String> {
-
-        public String transform(String vertex) {
-            return "Уровень устойчивости: " + voltages.transform(vertex);
-        }
-    }
+//    public class VoltageTips<E>
+//            implements Transformer<String, String> {
+//
+//        public String transform(String vertex) {
+//            return "Уровень устойчивости: " + voltages.transform(vertex);
+//        }
+//    }
 
     public class GradientPickedEdgePaintFunction<V, E> extends GradientEdgePaintTransformer<V, E> {
         protected boolean fill_edge = false;
