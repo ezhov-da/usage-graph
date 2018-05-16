@@ -74,6 +74,11 @@ public class ScriptFileSourceAnalysePanel extends AbstractSourceAnalysePanel {
                 textField.setText(path.path());
             }
         });
+
+        if (lastUsageComboBoxModel.getSize() != 0){
+            Path path = (Path) comboBoxLastUser.getSelectedItem();
+            textField.setText(path.path());
+        }
     }
 
     @Override
@@ -100,7 +105,7 @@ public class ScriptFileSourceAnalysePanel extends AbstractSourceAnalysePanel {
 
     private class LastUsageComboBoxModel extends AbstractListModel<Path> implements MutableComboBoxModel<Path>, Serializable {
         private PathStore pathStore;
-        private Path path;
+        private Path selectedPath;
         private java.util.List<Path> list;
 
         public LastUsageComboBoxModel(PathStore pathStore) {
@@ -110,6 +115,10 @@ public class ScriptFileSourceAnalysePanel extends AbstractSourceAnalysePanel {
             } catch (Exception e) {
                 e.printStackTrace();
                 list = Collections.EMPTY_LIST;
+            }
+
+            if (!list.isEmpty()){
+                setSelectedItem(list.get(0));
             }
         }
 
@@ -135,12 +144,12 @@ public class ScriptFileSourceAnalysePanel extends AbstractSourceAnalysePanel {
 
         @Override
         public void setSelectedItem(Object anItem) {
-            this.path = (Path) anItem;
+            this.selectedPath = (Path) anItem;
         }
 
         @Override
         public Object getSelectedItem() {
-            return path;
+            return selectedPath;
         }
 
         @Override

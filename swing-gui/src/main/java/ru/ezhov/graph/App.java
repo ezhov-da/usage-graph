@@ -1,10 +1,9 @@
 package ru.ezhov.graph;
 
 
-import ru.ezhov.graph.gui.commonapppanel.BasicPanel;
+import ru.ezhov.graph.gui.basicpanel.BasicPanel;
 import ru.ezhov.graph.gui.pluginpanel.PluginPanel;
 import ru.ezhov.graph.util.PercentScreenDimension;
-import ru.ezhov.source.analyse.plugin.AbstractSourceAnalysePanel;
 
 import javax.swing.*;
 import java.util.logging.Logger;

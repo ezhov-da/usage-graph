@@ -311,7 +311,7 @@ public class GraphPanel extends JPanel implements ActionListener {
         vertex_panel.add(v_color);
         vertex_panel.add(v_stroke);
         vertex_panel.add(v_labels);
-        vertex_panel.add(v_shape);
+//        vertex_panel.add(v_shape);
         //TODO: реализовать
         //vertex_panel.add(v_size);
         //TODO: реализовать

@@ -3,7 +3,6 @@ package ru.ezhov.graph.gui.graphtablepanel;
 import ru.ezhov.graph.gui.components.JTextFieldWithText;
 import ru.ezhov.graph.gui.domain.GraphObjectGui;
 import ru.ezhov.graph.gui.domain.GraphObjectsGui;
-import ru.ezhov.graph.gui.pluginpanel.PluginPanel;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -17,6 +16,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -45,7 +45,7 @@ public class GraphTablePanel extends JPanel {
         toolBar.add(new AbstractAction() {
             {
                 putValue(AbstractAction.NAME, "Скрыть таблицу");
-                putValue(AbstractAction.SMALL_ICON, new ImageIcon(PluginPanel.class.getResource("/hide_16x16.png")));
+                putValue(AbstractAction.SMALL_ICON, new ImageIcon(GraphTablePanel.class.getResource("/hide_16x16.png")));
             }
 
             private boolean hide = false;
@@ -54,10 +54,12 @@ public class GraphTablePanel extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 if (hide) {
                     putValue(AbstractAction.SHORT_DESCRIPTION, "Скрыть таблицу");
+                    putValue(AbstractAction.LONG_DESCRIPTION, "Скрыть таблицу");
                     putValue(AbstractAction.SMALL_ICON, new ImageIcon(GraphTablePanel.class.getResource("/hide_16x16.png")));
                     GraphTablePanel.this.add(tablePanel, BorderLayout.CENTER);
                 } else {
                     putValue(AbstractAction.SHORT_DESCRIPTION, "Отобразить таблицу");
+                    putValue(AbstractAction.LONG_DESCRIPTION, "Отобразить таблицу");
                     putValue(AbstractAction.SMALL_ICON, new ImageIcon(GraphTablePanel.class.getResource("/show_16x16.png")));
                     GraphTablePanel.this.remove(tablePanel);
                 }
@@ -65,6 +67,35 @@ public class GraphTablePanel extends JPanel {
                 GraphTablePanel.this.revalidate();
                 GraphTablePanel.this.repaint();
                 fireEventListener(EventType.HIDE_SHOW_TABLE_PANEL, null, null);
+            }
+        });
+
+        toolBar.add(new AbstractAction() {
+            {
+                putValue(AbstractAction.SHORT_DESCRIPTION, "Построить граф на основе выбранных");
+                putValue(AbstractAction.SMALL_ICON, new ImageIcon(GraphTablePanel.class.getResource("/node-select_16x16.png")));
+            }
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int rowCount = table.getRowCount();
+
+                if (rowCount != 0) {
+                    final List<GraphObjectGui> guis = new ArrayList<>();
+                    for (int i = 0; i < rowCount; i++) {
+                        GraphObjectGui graphObjectGui = (GraphObjectGui) table.getValueAt(i, 0);
+                        guis.add(graphObjectGui);
+                    }
+
+                    GraphObjectsGui objectsGui = new GraphObjectsGui() {
+                        @Override
+                        public List<GraphObjectGui> all() {
+                            return guis;
+                        }
+                    };
+
+                    fireEventListener(EventType.SHOW_SELECTED_GRAPH_OBJECTS, objectsGui, null);
+                }
             }
         });
 

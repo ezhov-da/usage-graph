@@ -1,4 +1,4 @@
-package ru.ezhov.graph.gui.tabbedpanel;
+package ru.ezhov.graph.gui.commonapppanel;
 
 import ru.ezhov.graph.gui.components.TabHeader;
 import ru.ezhov.graph.gui.detailinfopanel.DetailInfoPanel;
@@ -82,6 +82,16 @@ public class CommonPanel extends JPanel {
                         break;
                     case HIDE_SHOW_TABLE_PANEL:
                         splitPane.resetToPreferredSizes();
+                        break;
+
+                    case SHOW_SELECTED_GRAPH_OBJECTS:
+                        //TODO: Глаза обливаются кровью, нужно сделать адекватную обработку событий
+                        //TODO: Нужно до конца реализовать загрузку по выделенным
+                        GraphObjectsGui graphObjectsGui = (GraphObjectsGui) event;
+                        tabbedPane.removeTabAt(tabbedPane.indexOfTab("ГРАФ"));
+                        graphPanel = new GraphPanel(graphObjectsGui);
+                        tabbedPane.addTab("ГРАФ", graphPanel);
+                        tabbedPane.setTabComponentAt(0, new TabHeader("ГРАФ", tabbedPane, false));
                         break;
                 }
             }

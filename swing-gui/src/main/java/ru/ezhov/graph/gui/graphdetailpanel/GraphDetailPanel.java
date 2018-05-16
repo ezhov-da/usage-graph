@@ -17,7 +17,11 @@ import edu.uci.ics.jung.visualization.control.AbstractPopupGraphMousePlugin;
 import edu.uci.ics.jung.visualization.control.CrossoverScalingControl;
 import edu.uci.ics.jung.visualization.control.DefaultModalGraphMouse;
 import edu.uci.ics.jung.visualization.control.ScalingControl;
-import edu.uci.ics.jung.visualization.decorators.*;
+import edu.uci.ics.jung.visualization.decorators.AbstractVertexShapeTransformer;
+import edu.uci.ics.jung.visualization.decorators.EdgeShape;
+import edu.uci.ics.jung.visualization.decorators.GradientEdgePaintTransformer;
+import edu.uci.ics.jung.visualization.decorators.PickableEdgePaintTransformer;
+import edu.uci.ics.jung.visualization.decorators.ToStringLabeller;
 import edu.uci.ics.jung.visualization.picking.PickedInfo;
 import edu.uci.ics.jung.visualization.picking.PickedState;
 import edu.uci.ics.jung.visualization.renderers.BasicEdgeArrowRenderingSupport;
@@ -34,9 +38,18 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.geom.Point2D;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class GraphDetailPanel extends JPanel implements ActionListener {
 
@@ -83,7 +96,7 @@ public class GraphDetailPanel extends JPanel implements ActionListener {
     private Transformer<String, String> es_none;
     private VertexFontTransformer<String> vff;
     private EdgeFontTransformer<String> eff;
-    private VertexShapeSizeAspect<String, String> vssa;
+//    private VertexShapeSizeAspect<String, String> vssa;
     private DirectionDisplayPredicate<String, String> show_edge;
     private DirectionDisplayPredicate<String, String> show_arrow;
     private VertexDisplayPredicate<String, String> show_vertex;
@@ -145,7 +158,7 @@ public class GraphDetailPanel extends JPanel implements ActionListener {
         vv.getRenderContext().setVertexStrokeTransformer(vsh);
 //        vv.getRenderContext().setVertexLabelTransformer(new ToStringLabeller<String>());
         vv.getRenderContext().setVertexFontTransformer(vff);
-        vv.getRenderContext().setVertexShapeTransformer(vssa);
+//        vv.getRenderContext().setVertexShapeTransformer(vssa);
         vv.getRenderContext().setVertexIncludePredicate(show_vertex);
 
         vv.getRenderContext().setEdgeDrawPaintTransformer(edgeDrawPaint);
@@ -202,7 +215,9 @@ public class GraphDetailPanel extends JPanel implements ActionListener {
         if (!graphObjectGui.children().isEmpty()) {
             seedVertices.add(graphObjectGui.id());
             sources.add(graphObjectGui.id());
-        } else if (!graphObjectGui.parents().isEmpty()) {
+        }
+
+        if (!graphObjectGui.parents().isEmpty()) {
             sinks.add(graphObjectGui.id());
         }
 
@@ -210,6 +225,8 @@ public class GraphDetailPanel extends JPanel implements ActionListener {
             LOG.error("need at least 2 seeds (one source, one sink)");
         }
 
+
+        //TODO: нужно будет этот момент откорректировать
 //        VoltageScorer<String, String> voltage_scores =
 //                new VoltageScorer<String, String>(g, MapTransformer.getInstance(edge_weight), sources, sinks);
 //        voltage_scores.evaluate();
@@ -307,7 +324,7 @@ public class GraphDetailPanel extends JPanel implements ActionListener {
         vertex_panel.add(v_color);
         vertex_panel.add(v_stroke);
         vertex_panel.add(v_labels);
-        vertex_panel.add(v_shape);
+//        vertex_panel.add(v_shape);
         //TODO: реализовать
         //vertex_panel.add(v_size);
         //vertex_panel.add(v_aspect);
@@ -518,11 +535,11 @@ public class GraphDetailPanel extends JPanel implements ActionListener {
             vff.setBold(source.isSelected());
             eff.setBold(source.isSelected());
         } else if (source == v_shape) {
-            vssa.useFunnyShapes(source.isSelected());
-        } else if (source == v_size) {
-            vssa.setScaling(source.isSelected());
-        } else if (source == v_aspect) {
-            vssa.setStretching(source.isSelected());
+//            vssa.useFunnyShapes(source.isSelected());
+//        } else if (source == v_size) {
+//            vssa.setScaling(source.isSelected());
+//        } else if (source == v_aspect) {
+//            vssa.setStretching(source.isSelected());
         } else if (source == e_line) {
             if (source.isSelected()) {
                 vv.getRenderContext().setEdgeShapeTransformer(new EdgeShape.Line<String, String>());

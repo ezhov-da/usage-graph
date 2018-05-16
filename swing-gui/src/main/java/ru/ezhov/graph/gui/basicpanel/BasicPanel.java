@@ -1,10 +1,10 @@
-package ru.ezhov.graph.gui.commonapppanel;
+package ru.ezhov.graph.gui.basicpanel;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.ezhov.analyse.AnalyzedObjects;
 import ru.ezhov.analyse.NullAnalyzedObjects;
-import ru.ezhov.graph.gui.tabbedpanel.CommonPanel;
+import ru.ezhov.graph.gui.commonapppanel.CommonPanel;
 import ru.ezhov.graph.gui.util.AnalyseObjectToGraphObjectGui;
 import ru.ezhov.graph.util.PercentScreenDimension;
 import ru.ezhov.source.analyse.plugin.AbstractSourceAnalysePanel;
