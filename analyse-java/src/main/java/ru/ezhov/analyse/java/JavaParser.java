@@ -34,11 +34,6 @@ class JavaParser {
         }
 
         AnalyzedObjects analyzedObjects = buildAnalyzedObjects(javaFiles, mapWords);
-//        try {
-//            new ConsolePrintAnalyzedObjects(new PlainViewAnalyzedObjects(analyzedObjects).stream()).print();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
         return analyzedObjects;
     }
 
